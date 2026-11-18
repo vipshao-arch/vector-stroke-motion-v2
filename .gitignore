@@ -1,0 +1,8 @@
+node_modules/
+.venv/
+analysis/frames_bgr24.raw
+verification/screenshots_edge/
+verification/screenshots_edge2/
+verification/screenshots_playwright/
+*.pyc
+__pycache__/

@@ -1,0 +1,225 @@
+{
+  "baseURL": "http://127.0.0.1:8791/",
+  "chromePath": "C:\\Users\\vipshao\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe",
+  "times": [
+    0,
+    1,
+    2.5,
+    4,
+    5
+  ],
+  "screenshots": [
+    {
+      "seconds": 0,
+      "renderedTime": 0,
+      "path": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\render_0s.png",
+      "logicalPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\logical_0s.png",
+      "width": 752,
+      "height": 352,
+      "logicalSize": [
+        752,
+        352
+      ],
+      "glErrorAfterDraw": 0,
+      "frameUniforms": {
+        "time": 0,
+        "frame": 0
+      },
+      "pixelChecksum": 1705241308
+    },
+    {
+      "seconds": 1,
+      "renderedTime": 1,
+      "path": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\render_1s.png",
+      "logicalPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\logical_1s.png",
+      "width": 752,
+      "height": 352,
+      "logicalSize": [
+        752,
+        352
+      ],
+      "glErrorAfterDraw": 0,
+      "frameUniforms": {
+        "time": 0.19354837460978228,
+        "frame": 23.80645007700322
+      },
+      "pixelChecksum": 1705241308
+    },
+    {
+      "seconds": 2.5,
+      "renderedTime": 2.5,
+      "path": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\render_2_5s.png",
+      "logicalPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\logical_2_5s.png",
+      "width": 752,
+      "height": 352,
+      "logicalSize": [
+        752,
+        352
+      ],
+      "glErrorAfterDraw": 0,
+      "frameUniforms": {
+        "time": 0.4838709365244557,
+        "frame": 59.51612519250805
+      },
+      "pixelChecksum": 1705241308
+    },
+    {
+      "seconds": 4,
+      "renderedTime": 4,
+      "path": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\render_4s.png",
+      "logicalPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\logical_4s.png",
+      "width": 752,
+      "height": 352,
+      "logicalSize": [
+        752,
+        352
+      ],
+      "glErrorAfterDraw": 0,
+      "frameUniforms": {
+        "time": 0.7741934984391291,
+        "frame": 95.22580030801288
+      },
+      "pixelChecksum": 1705241308
+    },
+    {
+      "seconds": 5,
+      "renderedTime": 5,
+      "path": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\render_5s.png",
+      "logicalPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\logical_5s.png",
+      "width": 752,
+      "height": 352,
+      "logicalSize": [
+        752,
+        352
+      ],
+      "glErrorAfterDraw": 0,
+      "frameUniforms": {
+        "time": 0.9677418730489113,
+        "frame": 119.0322503850161
+      },
+      "pixelChecksum": 1705241308
+    }
+  ],
+  "runtime": {
+    "meta": {
+      "version": 4,
+      "format": "VSTK0004",
+      "width": 752,
+      "height": 352,
+      "fps": 24,
+      "frame_count": 124,
+      "duration": 5.166667,
+      "keyframe_count": 31,
+      "stroke_count": 36300,
+      "counts": {
+        "ellipse": 16000,
+        "line": 1000,
+        "quadratic_bezier": 7800,
+        "segment_stroke": 1400,
+        "petal": 2600,
+        "soft_brush": 7500
+      },
+      "regions": [
+        "background",
+        "arch",
+        "statue_left",
+        "statue_right",
+        "seat",
+        "torso",
+        "chest",
+        "hair",
+        "wing_left",
+        "wing_right",
+        "petals"
+      ],
+      "region_counts": {
+        "background": 3678,
+        "arch": 5480,
+        "statue_left": 2658,
+        "statue_right": 2528,
+        "seat": 3908,
+        "torso": 1977,
+        "chest": 272,
+        "hair": 3489,
+        "wing_left": 2852,
+        "wing_right": 5858,
+        "petals": 3600
+      },
+      "motion_models": [
+        "static_lock",
+        "breathing",
+        "hair_wave",
+        "wing_float_left",
+        "wing_float_right",
+        "petal_fall",
+        "shimmer"
+      ],
+      "motion_model_counts": {
+        "static_lock": 18252,
+        "breathing": 2249,
+        "hair_wave": 3489,
+        "wing_float_left": 2852,
+        "wing_float_right": 5858,
+        "petal_fall": 2600,
+        "shimmer": 1000
+      },
+      "source": "参考.mp4",
+      "background": {
+        "path": "assets/base.jpg",
+        "mime": "image/jpeg",
+        "bytes": 60597,
+        "description": "固定坐标的时域中值低频基底；运行时不位移、不缩放、不旋转"
+      },
+      "runtime_camera": "identity; static layers are locked in unified coordinates",
+      "analysis": {
+        "report": "C:/Users/vipshao/Documents/MagicLomix/2026-11-19/vector-stroke-motion-v2/analysis/motion_report.json",
+        "camera_max_translation_px": [
+          0,
+          0
+        ],
+        "camera_frames_rejected": 124,
+        "anchor_method": "Shi-Tomasi + ORB/RANSAC cross-check, then masked dense ECC translation confined to low-variance stone windows"
+      }
+    },
+    "strokeCount": 36300,
+    "modelCounts": [
+      18252,
+      2249,
+      3489,
+      2852,
+      5858,
+      2600,
+      1000
+    ],
+    "gl": {
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "renderer": "WebKit WebGL",
+      "error": 0
+    },
+    "videoElements": 0,
+    "errors": []
+  },
+  "consoleErrors": [],
+  "shaderErrors": [],
+  "shaderLinkErrors": {
+    "programCount": 2,
+    "noReportedShaderErrors": true
+  },
+  "diagnostics": {
+    "errors": [],
+    "diagnosticVisible": false,
+    "diagnosticText": "",
+    "status": "运行时程序化绘制中",
+    "glError": 0
+  },
+  "checks": {
+    "loaded": true,
+    "videoElements": true,
+    "noPageErrors": true,
+    "noConsoleErrors": true,
+    "noShaderErrors": true,
+    "noShaderLinkFailures": true,
+    "noWebGLError": true,
+    "fiveScreenshots": true
+  }
+}

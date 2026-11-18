@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>分层动态笔触重建 · Three.js</title>
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <p class="eyebrow">VIDEO → REGION-AWARE DRAWING INSTRUCTIONS → THREE.JS</p>
+        <h1>分层动态笔触重建</h1>
+      </div>
+      <div class="status" id="status" role="status">等待绘图指令</div>
+    </header>
+
+    <section class="stage" id="stage">
+      <canvas id="canvas" aria-label="由椭圆、线段、贝塞尔曲线、花瓣和软笔刷实时绘制的分层动画"></canvas>
+      <div class="loading" id="loading"><span></span> 正在装载分层笔触程序…</div>
+    </section>
+
+    <section class="controls">
+      <button id="play" class="primary" type="button">暂停</button>
+      <button id="restart" type="button">回到起点</button>
+      <label class="scrubber">
+        <span>时间</span>
+        <input id="time" type="range" min="0" max="5.166667" step="0.001" value="0">
+      </label>
+      <output id="timeLabel">0.000 s</output>
+    </section>
+
+    <pre id="diagnostic" class="diagnostic" role="alert" hidden></pre>
+
+    <section class="info">
+      <article>
+        <h2>分层运动</h2>
+        <p>背景、拱门、雕像和座椅固定在统一坐标里；头发按发丝相位传播弯曲，胸部与躯干独立呼吸，左右翅膀围绕各自锚点浮动，花瓣有生成、下落、横摆、自旋和淡入淡出。页面加载 <code>strokes.bin</code> 与固定低频基底；每条笔触含区域、运动模型和 31 组时间关键帧，由 Three.js 在 GPU 中绘制。</p>
+      </article>
+      <article>
+        <h2>指令统计</h2>
+        <dl id="stats"><dt>状态</dt><dd>等待数据</dd></dl>
+      </article>
+    </section>
+  </main>
+  <script type="module" src="src/main.js?v=5"></script>
+</body>
+</html>

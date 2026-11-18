@@ -1,0 +1,774 @@
+{
+  "times_seconds": [
+    0,
+    1,
+    2.5,
+    4,
+    5
+  ],
+  "reference_frame_indices": [
+    0,
+    24,
+    60,
+    96,
+    120
+  ],
+  "roi": {
+    "background_arch": [
+      615,
+      5,
+      705,
+      105
+    ],
+    "statue_left": [
+      58,
+      190,
+      160,
+      288
+    ],
+    "statue_right": [
+      565,
+      150,
+      665,
+      285
+    ],
+    "seat": [
+      285,
+      270,
+      470,
+      348
+    ],
+    "petals": [
+      0,
+      0,
+      752,
+      352
+    ],
+    "hair": [
+      300,
+      15,
+      445,
+      145
+    ],
+    "chest": [
+      330,
+      95,
+      415,
+      165
+    ],
+    "wing_left": [
+      55,
+      180,
+      265,
+      330
+    ],
+    "wing_right": [
+      485,
+      95,
+      745,
+      320
+    ]
+  },
+  "static_rois": [
+    "background_arch",
+    "statue_left",
+    "statue_right",
+    "seat"
+  ],
+  "dynamic_rois": [
+    "petals",
+    "hair",
+    "chest",
+    "wing_left",
+    "wing_right"
+  ],
+  "rendered": {
+    "background_arch": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.00024,
+        0.00161,
+        0.00023,
+        0.00044
+      ],
+      "max_drift_px": 0.00161,
+      "mean_drift_px": 0.00051,
+      "dx_dy": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          -5e-05,
+          -0.00023
+        ],
+        [
+          0.00075,
+          -0.00143
+        ],
+        [
+          -5e-05,
+          -0.00023
+        ],
+        [
+          5e-05,
+          -0.00044
+        ]
+      ],
+      "anchor_fraction": 0.1798,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        2.2868,
+        3.9242,
+        6.5179,
+        6.1727
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        13.0,
+        20.0,
+        32.0,
+        36.05
+      ],
+      "max_mean_abs_vs_t0": 6.5179,
+      "max_p95_abs_vs_t0": 36.05,
+      "temporal_std_mean": 4.9774
+    },
+    "statue_left": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "anchor_fraction": 0.0055,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        5.7209,
+        4.6679,
+        3.4747,
+        1.7563
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        16.0,
+        14.0,
+        12.0,
+        7.0
+      ],
+      "max_mean_abs_vs_t0": 5.7209,
+      "max_p95_abs_vs_t0": 16.0,
+      "temporal_std_mean": 2.9596
+    },
+    "statue_right": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          -0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "anchor_fraction": 0.1122,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        3.6866,
+        1.3696,
+        4.3263,
+        0.9625
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        13.0,
+        6.0,
+        15.0,
+        4.0
+      ],
+      "max_mean_abs_vs_t0": 4.3263,
+      "max_p95_abs_vs_t0": 15.0,
+      "temporal_std_mean": 2.2461
+    },
+    "seat": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          0.0,
+          -0.0
+        ],
+        [
+          0.0,
+          -0.0
+        ],
+        [
+          0.0,
+          -0.0
+        ],
+        [
+          0.0,
+          -0.0
+        ],
+        [
+          0.0,
+          -0.0
+        ]
+      ],
+      "anchor_fraction": 0.9256,
+      "pixel_identical_to_t0": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        0.2125,
+        0.2119,
+        0.2403,
+        0.2461
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_mean_abs_vs_t0": 0.2461,
+      "max_p95_abs_vs_t0": 0.0,
+      "temporal_std_mean": 0.1216
+    },
+    "petals": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        3.1348,
+        2.6423,
+        3.2276,
+        2.0737
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        14.0,
+        12.0,
+        15.0,
+        11.0
+      ],
+      "max_mean_abs_vs_t0": 3.2276,
+      "max_p95_abs_vs_t0": 15.0,
+      "temporal_std_mean": 2.4862
+    },
+    "hair": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        4.8786,
+        3.8019,
+        5.105,
+        5.2756
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        16.0,
+        14.0,
+        18.0,
+        19.0
+      ],
+      "max_mean_abs_vs_t0": 5.2756,
+      "max_p95_abs_vs_t0": 19.0,
+      "temporal_std_mean": 3.9533
+    },
+    "chest": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        4.91,
+        3.6784,
+        4.0571,
+        3.8643
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        17.0,
+        13.0,
+        15.0,
+        15.0
+      ],
+      "max_mean_abs_vs_t0": 4.91,
+      "max_p95_abs_vs_t0": 17.0,
+      "temporal_std_mean": 3.1757
+    },
+    "wing_left": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        4.6412,
+        3.7684,
+        2.77,
+        1.4611
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        16.0,
+        13.0,
+        11.0,
+        7.0
+      ],
+      "max_mean_abs_vs_t0": 4.6412,
+      "max_p95_abs_vs_t0": 16.0,
+      "temporal_std_mean": 2.4369
+    },
+    "wing_right": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        3.8951,
+        2.1679,
+        4.2382,
+        1.1686
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        14.0,
+        9.0,
+        15.0,
+        5.0
+      ],
+      "max_mean_abs_vs_t0": 4.2382,
+      "max_p95_abs_vs_t0": 15.0,
+      "temporal_std_mean": 2.5008
+    }
+  },
+  "reference": {
+    "background_arch": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "anchor_fraction": 0.008,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        1.937,
+        1.8936,
+        2.2631,
+        1.9315
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        5.0,
+        5.0,
+        5.0,
+        5.0
+      ],
+      "max_mean_abs_vs_t0": 2.2631,
+      "max_p95_abs_vs_t0": 5.0,
+      "temporal_std_mean": 1.462
+    },
+    "statue_left": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "anchor_fraction": 0.0124,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        17.9627,
+        28.1024,
+        12.5814,
+        3.1574
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        117.0,
+        123.0,
+        90.0,
+        10.0
+      ],
+      "max_mean_abs_vs_t0": 28.1024,
+      "max_p95_abs_vs_t0": 123.0,
+      "temporal_std_mean": 13.889
+    },
+    "statue_right": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "anchor_fraction": 0.0001,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        16.0163,
+        32.7497,
+        19.9503,
+        3.9002
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        84.0,
+        114.0,
+        93.0,
+        14.0
+      ],
+      "max_mean_abs_vs_t0": 32.7497,
+      "max_p95_abs_vs_t0": 114.0,
+      "temporal_std_mean": 18.204
+    },
+    "seat": {
+      "type": "static",
+      "drift_px": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_drift_px": 0.0,
+      "mean_drift_px": 0.0,
+      "dx_dy": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "anchor_fraction": 0.0055,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0.0,
+        6.3654,
+        7.9034,
+        4.285,
+        2.6843
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        24.0,
+        36.0,
+        14.0,
+        8.0
+      ],
+      "max_mean_abs_vs_t0": 7.9034,
+      "max_p95_abs_vs_t0": 36.0,
+      "temporal_std_mean": 4.2802
+    },
+    "petals": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        10.5744,
+        15.2535,
+        9.4412,
+        2.9429
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        69.0,
+        94.0,
+        60.0,
+        9.0
+      ],
+      "max_mean_abs_vs_t0": 15.2535,
+      "max_p95_abs_vs_t0": 94.0,
+      "temporal_std_mean": 8.6103
+    },
+    "hair": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        17.9655,
+        24.5663,
+        12.6416,
+        4.493
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        80.0,
+        103.0,
+        54.0,
+        15.0
+      ],
+      "max_mean_abs_vs_t0": 24.5663,
+      "max_p95_abs_vs_t0": 103.0,
+      "temporal_std_mean": 13.2796
+    },
+    "chest": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        35.1757,
+        46.9154,
+        20.4731,
+        5.0272
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        122.0,
+        145.0,
+        82.0,
+        15.0
+      ],
+      "max_mean_abs_vs_t0": 46.9154,
+      "max_p95_abs_vs_t0": 145.0,
+      "temporal_std_mean": 24.181
+    },
+    "wing_left": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        14.8798,
+        23.4572,
+        11.649,
+        3.6454
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        100.0,
+        114.0,
+        73.0,
+        14.0
+      ],
+      "max_mean_abs_vs_t0": 23.4572,
+      "max_p95_abs_vs_t0": 114.0,
+      "temporal_std_mean": 12.1543
+    },
+    "wing_right": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0.0,
+        15.8156,
+        26.5418,
+        18.8532,
+        3.2893
+      ],
+      "p95_abs_vs_t0": [
+        0.0,
+        87.0,
+        108.0,
+        100.0,
+        11.0
+      ],
+      "max_mean_abs_vs_t0": 26.5418,
+      "max_p95_abs_vs_t0": 108.0,
+      "temporal_std_mean": 15.3187
+    }
+  },
+  "summary": {
+    "rendered_static_max_drift_px": 0.00161,
+    "rendered_dynamic_min_temporal_std": 2.4369,
+    "reference_static_max_drift_px": 0.0
+  },
+  "checks": {
+    "static_drift_below_0_2px": true,
+    "all_dynamic_rois_change": true,
+    "petals_change": true,
+    "hair_change": true,
+    "chest_change": true,
+    "wings_change": true
+  }
+}
