@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "node tools/serve.js",
     "check:instructions": "node tools/check-instructions.mjs assets/strokes.bin",
-    "check:js": "node --check src/instructions.js && node --check src/player.js && node --check src/main.js && node --check tools/check-instructions.mjs && node --check tools/verify-browser.mjs && node --check tools/verify-all.mjs && node --check tools/serve.js",
+    "check:js": "node --check src/instructions.js && node --check src/dynamicOverlay.js && node --check src/player.js && node --check src/main.js && node --check tools/check-instructions.mjs && node --check tools/verify-browser.mjs && node --check tools/verify-all.mjs && node --check tools/serve.js",
     "verify:browser": "node tools/verify-all.mjs",
     "test": "npm run check:js && npm run check:instructions && npm run verify:browser"
   },

@@ -25,7 +25,9 @@
         "time": 0,
         "frame": 0
       },
-      "pixelChecksum": 1705241308
+      "pixelChecksum": 1707605701,
+      "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_0s.png",
+      "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_0s.png"
     },
     {
       "seconds": 1,
@@ -43,7 +45,9 @@
         "time": 0.19354837460978228,
         "frame": 23.80645007700322
       },
-      "pixelChecksum": 1705241308
+      "pixelChecksum": 1707748765,
+      "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_1s.png",
+      "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_1s.png"
     },
     {
       "seconds": 2.5,
@@ -61,7 +65,9 @@
         "time": 0.4838709365244557,
         "frame": 59.51612519250805
       },
-      "pixelChecksum": 1705241308
+      "pixelChecksum": 1707378560,
+      "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_2_5s.png",
+      "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_2_5s.png"
     },
     {
       "seconds": 4,
@@ -79,7 +85,9 @@
         "time": 0.7741934984391291,
         "frame": 95.22580030801288
       },
-      "pixelChecksum": 1705241308
+      "pixelChecksum": 1707348870,
+      "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_4s.png",
+      "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_4s.png"
     },
     {
       "seconds": 5,
@@ -97,7 +105,9 @@
         "time": 0.9677418730489113,
         "frame": 119.0322503850161
       },
-      "pixelChecksum": 1705241308
+      "pixelChecksum": 1707262875,
+      "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_5s.png",
+      "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_5s.png"
     }
   ],
   "runtime": {

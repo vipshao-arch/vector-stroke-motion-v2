@@ -4,6 +4,8 @@ export const PARAMS_PER_STROKE = 12;
 export const COLOR_COMPONENTS = 3;
 export const KEYFRAME_FIELDS = 8;
 export const MOTION_FIELDS = 8;
+export const STATIC_LAYER_INDEX = 0;
+export const DYNAMIC_LAYER_INDEX = 1;
 export const STROKE_BYTES =
   8 + // kind, region, motion model, flags, alpha
   PARAMS_PER_STROKE * 4 +
@@ -51,6 +53,32 @@ export function parseInstructions(buffer) {
     throw new Error(`指令长度异常：${offset} + ${strokeCount} * ${STROKE_BYTES} != ${buffer.byteLength}`);
   }
 
+  const staticIds = [];
+  const dynamicIds = [];
+  const sourceGeometry = new Float32Array(strokeCount * 12);
+  const sourceColors = new Float32Array(strokeCount * 3);
+  const sourceMotion = new Float32Array(strokeCount * MOTION_FIELDS);
+  const sourceKeys = new Float32Array(strokeCount * KEYFRAMES * KEYFRAME_FIELDS);
+  const sourceKinds = new Uint8Array(strokeCount);
+  const sourceRegions = new Uint8Array(strokeCount);
+  const sourceModels = new Uint8Array(strokeCount);
+  const sourceAlpha = new Float32Array(strokeCount);
+  const strokeOffset = offset;
+  for (let i = 0; i < strokeCount; i += 1) {
+    const record = offset + i * STROKE_BYTES;
+    (view.getUint8(record + 2) === 0 ? staticIds : dynamicIds).push(i);
+    sourceKinds[i] = view.getUint8(record);
+    sourceRegions[i] = view.getUint8(record + 1);
+    sourceModels[i] = view.getUint8(record + 2);
+    sourceAlpha[i] = view.getFloat32(record + 4, true);
+    for (let j = 0; j < 12; j += 1) sourceGeometry[i * 12 + j] = view.getFloat32(record + 8 + j * 4, true);
+    for (let j = 0; j < 3; j += 1) sourceColors[i * 3 + j] = view.getFloat32(record + 56 + j * 4, true);
+    for (let j = 0; j < MOTION_FIELDS; j += 1) sourceMotion[i * MOTION_FIELDS + j] = view.getFloat32(record + 68 + j * 4, true);
+    for (let j = 0; j < KEYFRAMES * KEYFRAME_FIELDS; j += 1) {
+      sourceKeys[i * KEYFRAMES * KEYFRAME_FIELDS + j] = view.getFloat32(record + 100 + j * 4, true);
+    }
+  }
+  const orderedIds = [...staticIds, ...dynamicIds];
   const params = new Float32Array(strokeCount * 16);
   const colors = new Float32Array(strokeCount * 4);
   const motion = new Float32Array(strokeCount * MOTION_FIELDS);
@@ -64,7 +92,10 @@ export function parseInstructions(buffer) {
     offset += length * 4;
     return out;
   };
-  for (let i = 0; i < strokeCount; i += 1) {
+  // Seek to the exact source record of each ordered slot.
+  for (let slot = 0; slot < strokeCount; slot += 1) {
+    const i = orderedIds[slot];
+    offset = strokeOffset + i * STROKE_BYTES;
     const kind = view.getUint8(offset);
     const region = view.getUint8(offset + 1);
     const model = view.getUint8(offset + 2);
@@ -85,14 +116,35 @@ export function parseInstructions(buffer) {
     // params.rgba = kind/255, region/255, model/255, alpha. The three unused
     // fields in p8..p11 carry generator parameters that the shader reads from
     // the dedicated motion block, so only four vec4 slots are needed here.
-    params.set([kind / 255, region / 255, model / 255, alpha, ...p], i * 16);
-    colors.set([c[0] / 255, c[1] / 255, c[2] / 255, 1], i * 4);
-    motion.set(m, i * MOTION_FIELDS);
-    keys.set(k, i * KEYFRAMES * KEYFRAME_FIELDS);
+    // Texture slot order is static first, dynamic second. aIndex addresses
+    // these slots; sourceRecords.ids maps each slot back to its source stroke.
+    params.set([kind / 255, region / 255, model / 255, alpha, ...p], slot * 16);
+    colors.set([c[0] / 255, c[1] / 255, c[2] / 255, 1], slot * 4);
+    motion.set(m, slot * MOTION_FIELDS);
+    keys.set(k, slot * KEYFRAMES * KEYFRAME_FIELDS);
   }
+  // The final ordered slot may point to any source record, so validate the
+  // consumed source range instead of the cursor left by the last iteration.
+  offset = strokeOffset + strokeCount * STROKE_BYTES;
   if (offset !== buffer.byteLength) throw new Error(`解析后偏移异常：${offset} != ${buffer.byteLength}`);
   return {
     meta, camera, params, colors, motion, keys, layerCounts,
     regionCounts, modelCounts, strokeCount, bytes: buffer.byteLength,
+    staticCount: staticIds.length,
+    dynamicCount: dynamicIds.length,
+    dynamicStart: staticIds.length,
+    sourceRecords: {
+      kinds: sourceKinds,
+      regions: sourceRegions,
+      models: sourceModels,
+      alpha: sourceAlpha,
+      geometry: sourceGeometry,
+      colors: sourceColors,
+      motion: sourceMotion,
+      keys: sourceKeys,
+      ids: orderedIds,
+      dynamicStart: staticIds.length,
+      dynamicCount: dynamicIds.length,
+    },
   };
 }

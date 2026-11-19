@@ -1,0 +1,787 @@
+{
+  "times_seconds": [
+    0,
+    1,
+    2.5,
+    4,
+    5
+  ],
+  "reference_frame_indices": [
+    0,
+    24,
+    60,
+    96,
+    120
+  ],
+  "roi": {
+    "background_arch": [
+      615,
+      5,
+      705,
+      105
+    ],
+    "statue_left": [
+      58,
+      190,
+      160,
+      288
+    ],
+    "statue_right": [
+      565,
+      150,
+      665,
+      285
+    ],
+    "seat": [
+      285,
+      270,
+      470,
+      348
+    ],
+    "petals": [
+      0,
+      0,
+      752,
+      352
+    ],
+    "hair": [
+      300,
+      15,
+      445,
+      145
+    ],
+    "chest": [
+      330,
+      95,
+      415,
+      165
+    ],
+    "wing_left": [
+      55,
+      180,
+      265,
+      330
+    ],
+    "wing_right": [
+      485,
+      95,
+      745,
+      320
+    ]
+  },
+  "static_rois": [
+    "background_arch",
+    "statue_left",
+    "statue_right",
+    "seat"
+  ],
+  "dynamic_rois": [
+    "petals",
+    "hair",
+    "chest",
+    "wing_left",
+    "wing_right"
+  ],
+  "rendered": {
+    "background_arch": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0.00039,
+        0,
+        0,
+        0.00079
+      ],
+      "max_drift_px": 0.00079,
+      "mean_drift_px": 0.00024,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0.00038,
+          -0.00011
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0.00076,
+          -0.00024
+        ]
+      ],
+      "anchor_fraction": 0.5259,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        0.7831,
+        1.2556,
+        1.1941,
+        1.4635
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        3,
+        9,
+        9,
+        11
+      ],
+      "max_mean_abs_vs_t0": 1.4635,
+      "max_p95_abs_vs_t0": 11,
+      "temporal_std_mean": 1.4708
+    },
+    "statue_left": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0.00127,
+        0.00012,
+        0.00079,
+        0.00107
+      ],
+      "max_drift_px": 0.00127,
+      "mean_drift_px": 0.00065,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          -0.00126,
+          -0.00015
+        ],
+        [
+          -0.00004,
+          -0.00011
+        ],
+        [
+          -0.00077,
+          -0.00017
+        ],
+        [
+          -0.00105,
+          -0.00022
+        ]
+      ],
+      "anchor_fraction": 0.5032,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        0.4675,
+        0.5286,
+        0.5508,
+        0.6964
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        3,
+        3,
+        3,
+        4
+      ],
+      "max_mean_abs_vs_t0": 0.6964,
+      "max_p95_abs_vs_t0": 4,
+      "temporal_std_mean": 0.5894
+    },
+    "statue_right": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0.00383,
+        0.00594,
+        0.00449,
+        0
+      ],
+      "max_drift_px": 0.00594,
+      "mean_drift_px": 0.00285,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0.00191,
+          -0.00332
+        ],
+        [
+          0.00359,
+          -0.00473
+        ],
+        [
+          0.00194,
+          -0.00405
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "anchor_fraction": 0.6077,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        1.1278,
+        0.924,
+        0.9072,
+        0.9386
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        7,
+        5,
+        5,
+        4
+      ],
+      "max_mean_abs_vs_t0": 1.1278,
+      "max_p95_abs_vs_t0": 7,
+      "temporal_std_mean": 0.7224
+    },
+    "seat": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_drift_px": 0,
+      "mean_drift_px": 0,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "anchor_fraction": 1,
+      "pixel_identical_to_t0": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_mean_abs_vs_t0": 0,
+      "max_p95_abs_vs_t0": 0,
+      "temporal_std_mean": 0
+    },
+    "petals": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        0.7176,
+        0.6306,
+        0.6734,
+        0.6851
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        4,
+        3,
+        4,
+        4
+      ],
+      "max_mean_abs_vs_t0": 0.7176,
+      "max_p95_abs_vs_t0": 4,
+      "temporal_std_mean": 0.6092
+    },
+    "hair": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        2.139,
+        1.4363,
+        1.8637,
+        1.6886
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        12,
+        9,
+        11,
+        9
+      ],
+      "max_mean_abs_vs_t0": 2.139,
+      "max_p95_abs_vs_t0": 12,
+      "temporal_std_mean": 1.4493
+    },
+    "chest": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        4.5706,
+        2.9738,
+        3.5806,
+        3.5779
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        19,
+        14,
+        17,
+        15
+      ],
+      "max_mean_abs_vs_t0": 4.5706,
+      "max_p95_abs_vs_t0": 19,
+      "temporal_std_mean": 2.9539
+    },
+    "wing_left": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        0.4512,
+        0.4661,
+        0.5124,
+        0.5553
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        3,
+        3,
+        3,
+        3
+      ],
+      "max_mean_abs_vs_t0": 0.5553,
+      "max_p95_abs_vs_t0": 3,
+      "temporal_std_mean": 0.4816
+    },
+    "wing_right": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        0.8919,
+        0.7267,
+        0.8289,
+        0.9006
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        5,
+        4,
+        4,
+        5
+      ],
+      "max_mean_abs_vs_t0": 0.9006,
+      "max_p95_abs_vs_t0": 5,
+      "temporal_std_mean": 0.6981
+    }
+  },
+  "reference": {
+    "background_arch": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_drift_px": 0,
+      "mean_drift_px": 0,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "anchor_fraction": 0.008,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        1.937,
+        1.8936,
+        2.2631,
+        1.9315
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        5,
+        5,
+        5,
+        5
+      ],
+      "max_mean_abs_vs_t0": 2.2631,
+      "max_p95_abs_vs_t0": 5,
+      "temporal_std_mean": 1.462
+    },
+    "statue_left": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_drift_px": 0,
+      "mean_drift_px": 0,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "anchor_fraction": 0.0124,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        17.9627,
+        28.1024,
+        12.5814,
+        3.1574
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        117,
+        123,
+        90,
+        10
+      ],
+      "max_mean_abs_vs_t0": 28.1024,
+      "max_p95_abs_vs_t0": 123,
+      "temporal_std_mean": 13.889
+    },
+    "statue_right": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_drift_px": 0,
+      "mean_drift_px": 0,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "anchor_fraction": 0.0001,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        16.0163,
+        32.7497,
+        19.9503,
+        3.9002
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        84,
+        114,
+        93,
+        14
+      ],
+      "max_mean_abs_vs_t0": 32.7497,
+      "max_p95_abs_vs_t0": 114,
+      "temporal_std_mean": 18.204
+    },
+    "seat": {
+      "type": "static",
+      "drift_px": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "max_drift_px": 0,
+      "mean_drift_px": 0,
+      "dx_dy": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "anchor_fraction": 0.0055,
+      "pixel_identical_to_t0": [
+        true,
+        false,
+        false,
+        false,
+        false
+      ],
+      "mean_abs_vs_t0": [
+        0,
+        6.3654,
+        7.9034,
+        4.285,
+        2.6843
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        24,
+        36,
+        14,
+        8
+      ],
+      "max_mean_abs_vs_t0": 7.9034,
+      "max_p95_abs_vs_t0": 36,
+      "temporal_std_mean": 4.2802
+    },
+    "petals": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        10.5744,
+        15.2535,
+        9.4412,
+        2.9429
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        69,
+        94,
+        60,
+        9
+      ],
+      "max_mean_abs_vs_t0": 15.2535,
+      "max_p95_abs_vs_t0": 94,
+      "temporal_std_mean": 8.6103
+    },
+    "hair": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        17.9655,
+        24.5663,
+        12.6416,
+        4.493
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        80,
+        103,
+        54,
+        15
+      ],
+      "max_mean_abs_vs_t0": 24.5663,
+      "max_p95_abs_vs_t0": 103,
+      "temporal_std_mean": 13.2796
+    },
+    "chest": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        35.1757,
+        46.9154,
+        20.4731,
+        5.0272
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        122,
+        145,
+        82,
+        15
+      ],
+      "max_mean_abs_vs_t0": 46.9154,
+      "max_p95_abs_vs_t0": 145,
+      "temporal_std_mean": 24.181
+    },
+    "wing_left": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        14.8798,
+        23.4572,
+        11.649,
+        3.6454
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        100,
+        114,
+        73,
+        14
+      ],
+      "max_mean_abs_vs_t0": 23.4572,
+      "max_p95_abs_vs_t0": 114,
+      "temporal_std_mean": 12.1543
+    },
+    "wing_right": {
+      "type": "dynamic",
+      "mean_abs_vs_t0": [
+        0,
+        15.8156,
+        26.5418,
+        18.8532,
+        3.2893
+      ],
+      "p95_abs_vs_t0": [
+        0,
+        87,
+        108,
+        100,
+        11
+      ],
+      "max_mean_abs_vs_t0": 26.5418,
+      "max_p95_abs_vs_t0": 108,
+      "temporal_std_mean": 15.3187
+    }
+  },
+  "summary": {
+    "rendered_static_max_drift_px": 0.00594,
+    "rendered_dynamic_min_temporal_std": 0.4816,
+    "reference_static_max_drift_px": 0
+  },
+  "checks": {
+    "static_drift_below_0_2px": true,
+    "all_dynamic_rois_change": true,
+    "petals_change": true,
+    "hair_change": true,
+    "chest_change": true,
+    "wings_change": true
+  },
+  "render_source": "browser_composited_webgl_and_canvas2d_overlay",
+  "screenshot_files": {
+    "logical": "verification/screenshots/logical_*.png",
+    "webgl_base": "verification/screenshots/webgl_*.png",
+    "motion_overlay": "verification/screenshots/overlay_*.png"
+  },
+  "focus_regions": {
+    "petals": "fall, sway, spin and fade",
+    "hair": "curve phase propagation",
+    "chest": "breathing halo and local scale",
+    "wing_left": "independent anchor and phase",
+    "wing_right": "independent anchor and phase"
+  }
+}

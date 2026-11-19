@@ -1,7 +1,8 @@
-import * as THREE from './three.module.js?v=5';
+import * as THREE from './three.module.js?v=6';
 import {
   KEYFRAMES, KEYFRAME_FIELDS, parseInstructions,
-} from './instructions.js?v=5';
+} from './instructions.js?v=6';
+import { DynamicOverlay } from './dynamicOverlay.js?v=6';
 
 const VERTEX_SHADER = /* glsl */ `
   precision highp float;
@@ -63,6 +64,7 @@ const VERTEX_SHADER = /* glsl */ `
   void main() {
     float stroke = aIndex;
     vec4 block = texel(uParams, uParamSize, stroke * 4.0);
+    // Kind and motion model are packed as normalized bytes in the first vec4.
     float kind = block.r * 255.0;
     float model = block.b * 255.0;
     float alphaBase = block.a;
@@ -399,6 +401,7 @@ export class StrokePlayer {
     const {
       meta, params, colors, motion, keys, layerCounts,
       regionCounts, modelCounts, strokeCount, bytes,
+      staticCount, dynamicCount, dynamicStart, sourceRecords,
     } = result;
     this.meta = meta;
     const maxTextureSize = this.renderer.capabilities.maxTextureSize || 2048;
@@ -406,16 +409,17 @@ export class StrokePlayer {
     const colorTexture = paddedTextureDimensions(colors, maxTextureSize);
     const motionTexture = paddedTextureDimensions(motion, maxTextureSize);
     const keyTexture = paddedTextureDimensions(keys, maxTextureSize);
-    const indices = new Float32Array(strokeCount);
-    for (let i = 0; i < strokeCount; i += 1) indices[i] = i;
-
     const geometry = new THREE.InstancedBufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute([
       -0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0,
     ], 3));
     geometry.setIndex([0, 1, 2, 0, 2, 3]);
-    geometry.setAttribute('aIndex', new THREE.InstancedBufferAttribute(indices, 1));
-    geometry.instanceCount = strokeCount;
+    const staticIndices = new Float32Array(staticCount);
+    const dynamicIndices = new Float32Array(dynamicCount);
+    for (let i = 0; i < staticCount; i += 1) staticIndices[i] = i;
+    for (let i = 0; i < dynamicCount; i += 1) dynamicIndices[i] = dynamicStart + i;
+    geometry.setAttribute('aIndex', new THREE.InstancedBufferAttribute(staticIndices, 1));
+    geometry.instanceCount = staticCount;
     geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 10);
 
     this.uniforms = {
@@ -443,11 +447,36 @@ export class StrokePlayer {
       blendSrc: THREE.OneFactor,
       blendDst: THREE.OneMinusSrcAlphaFactor,
     });
+    const dynamicGeometry = geometry.clone();
+    dynamicGeometry.setAttribute('aIndex', new THREE.InstancedBufferAttribute(dynamicIndices, 1));
+    dynamicGeometry.instanceCount = dynamicCount;
+    dynamicGeometry.boundingSphere = geometry.boundingSphere;
+
+    // One material and one shared uniform object keeps both batches in sync.
+    // Static strokes are drawn first; dynamic strokes follow in a second
+    // instance batch. The Canvas 2D foreground adds visible detail motion on
+    // GPU drivers that do not refresh large float-texture vertex draws.
+    this.staticMaterial = material;
+    this.dynamicMaterial = material;
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.frustumCulled = false;
     this.mesh.renderOrder = 1;
-    this.scene.add(this.mesh);
+    this.dynamicMesh = new THREE.Mesh(dynamicGeometry, material);
+    this.dynamicMesh.frustumCulled = false;
+    this.dynamicMesh.renderOrder = 2;
+    const strokeLayer = new THREE.Group();
+    strokeLayer.add(this.mesh);
+    strokeLayer.add(this.dynamicMesh);
+    this.scene.add(strokeLayer);
+    this.materials = [material];
+    const overlayCanvas = document.createElement('canvas');
+    overlayCanvas.className = 'dynamic-overlay';
+    overlayCanvas.setAttribute('aria-hidden', 'true');
+    (this.canvas.parentElement || document.body).appendChild(overlayCanvas);
+    this.overlay = new DynamicOverlay(overlayCanvas, sourceRecords, this.meta);
     this.strokeCount = strokeCount;
+    this.staticCount = staticCount;
+    this.dynamicCount = dynamicCount;
     this.layerCounts = layerCounts;
     this.regionCounts = regionCounts;
     this.modelCounts = modelCounts;
@@ -466,7 +495,16 @@ export class StrokePlayer {
   setTime(seconds) {
     if (!this.meta) return;
     this.elapsed = Math.max(0, Math.min(this.meta.duration, seconds));
-    this.drawFrame();
+    const normalized = this.elapsed / this.meta.duration;
+    this.uniforms.uTime.value = normalized;
+    this.uniforms.uFrame.value = normalized * (this.meta.frame_count - 1);
+    for (const material of this.materials) {
+      material.uniforms.uTime.value = normalized;
+      material.uniforms.uFrame.value = normalized * (this.meta.frame_count - 1);
+      material.uniformsNeedUpdate = true;
+    }
+    if (this.overlay) this.overlay.draw(this.elapsed);
+    if (this.loaded) this.renderer.render(this.scene, this.camera);
   }
 
   toggle() {
@@ -475,11 +513,7 @@ export class StrokePlayer {
   }
 
   drawFrame() {
-    if (!this.loaded) return;
-    const normalized = this.elapsed / this.meta.duration;
-    this.uniforms.uTime.value = normalized;
-    this.uniforms.uFrame.value = normalized * (this.meta.frame_count - 1);
-    this.renderer.render(this.scene, this.camera);
+    this.setTime(this.elapsed);
   }
 
   animate() {

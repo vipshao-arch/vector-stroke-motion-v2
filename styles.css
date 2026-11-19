@@ -40,6 +40,14 @@ h1 { font-size: clamp(25px, 4vw, 38px); line-height: 1.1; margin: 0; font-weight
 }
 
 canvas { display: block; width: 100%; height: 100%; }
+.dynamic-overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 .loading { position: absolute; inset: 0; display: grid; place-content: center; gap: 12px; color: #22213c; font-size: 14px; background: #9994c3; transition: opacity .35s; }
 .loading.hidden { opacity: 0; pointer-events: none; }
 .loading[hidden] { display: none; }

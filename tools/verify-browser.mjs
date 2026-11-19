@@ -67,11 +67,17 @@ for (const seconds of times) {
     window.player.setTime(t);
     return new Promise((done) => requestAnimationFrame(() => {
       window.player.setTime(t);
+      const capture = () => target.toDataURL('image/png').split(',')[1];
+      context.clearRect(0, 0, 752, 352);
       context.drawImage(source, 0, 0, 752, 352);
-      done({
+      const webglPng = capture();
+      const overlay = document.querySelector('canvas.dynamic-overlay');
+      if (overlay) context.drawImage(overlay, 0, 0, 752, 352);
+      requestAnimationFrame(() => done({
         png: target.toDataURL('image/png').split(',')[1],
+        webglPng,
         checksum: Array.from(context.getImageData(0, 0, 752, 352).data).reduce((sum, value, index) => (sum + value * ((index % 17) + 1)) | 0, 0),
-      });
+      }));
     }));
   }, seconds);
   const renderedTime = seconds;
@@ -80,11 +86,23 @@ for (const seconds of times) {
   await writeFile(path, Buffer.from(pixels.png, 'base64'));
   const logicalPath = resolve(outputDir, `logical_${String(seconds).replace('.', '_')}s.png`);
   await writeFile(logicalPath, Buffer.from(pixels.png, 'base64'));
+  const webglPath = outputDir === resolve('verification/screenshots')
+    ? resolve(outputDir, `webgl_${String(seconds).replace('.', '_')}s.png`)
+    : null;
+  if (webglPath) await writeFile(webglPath, Buffer.from(pixels.webglPng, 'base64'));
   const glErrorAfterDraw = await page.evaluate(() => window.player.renderer.getContext().getError());
   const frameUniforms = await page.evaluate(() => ({
     time: window.player.mesh.material.uniforms.uTime.value,
     frame: window.player.mesh.material.uniforms.uFrame.value,
   }));
+  const overlayPng = await page.evaluate(() => {
+    const overlay = document.querySelector('canvas.dynamic-overlay');
+    return overlay ? overlay.toDataURL('image/png').split(',')[1] : null;
+  });
+  const overlayPath = outputDir === resolve('verification/screenshots')
+    ? resolve(outputDir, `overlay_${String(seconds).replace('.', '_')}s.png`)
+    : null;
+  if (overlayPng && overlayPath) await writeFile(overlayPath, Buffer.from(overlayPng, 'base64'));
   screenshots.push({
     seconds,
     renderedTime,
@@ -96,6 +114,8 @@ for (const seconds of times) {
     glErrorAfterDraw,
     frameUniforms,
     pixelChecksum: pixels.checksum,
+    webglPath,
+    overlayPath,
   });
 }
 
