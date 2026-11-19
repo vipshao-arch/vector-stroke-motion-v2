@@ -65,8 +65,8 @@
     "background": {
       "path": "assets/base.jpg",
       "mime": "image/jpeg",
-      "bytes": 72447,
-      "description": "唯一的固定静态底板；动态物体的冻结轮廓已按包络清理"
+      "bytes": 70581,
+      "description": "唯一的固定静态底板；运动包络内的冻结轮廓已做局部低频修补"
     },
     "runtime_camera": "identity; static layers are locked in unified coordinates",
     "analysis": {

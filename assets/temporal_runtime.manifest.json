@@ -14,7 +14,7 @@
         445,
         215
       ],
-      "limit": 1100
+      "limit": 4500
     },
     {
       "name": "chest",
@@ -24,7 +24,7 @@
         435,
         190
       ],
-      "limit": 380
+      "limit": 2200
     },
     {
       "name": "wing_left",
@@ -34,7 +34,7 @@
         315,
         352
       ],
-      "limit": 1500
+      "limit": 8500
     },
     {
       "name": "wing_right",
@@ -44,7 +44,7 @@
         752,
         352
       ],
-      "limit": 2100
+      "limit": 12000
     },
     {
       "name": "petals",
@@ -59,7 +59,7 @@
   ],
   "file": "assets/temporal_runtime.bin",
   "base": "assets/base.jpg",
-  "bytes": 20895674,
+  "bytes": 17125810,
   "header_bytes": 42,
   "stroke_record_bytes": 14,
   "wash_record_bytes": 8,
@@ -72,15 +72,13 @@
     "cell_px": 4
   },
   "strokes": {
-    "total": 741520,
-    "mean_per_frame": 5980.0,
-    "min_per_frame": 5980,
-    "max_per_frame": 5980
+    "total": 660920,
+    "mean_per_frame": 5330.0
   },
   "wash_patches": {
-    "total": 1312744,
-    "mean_per_frame": 10586.6
+    "total": 982561,
+    "mean_per_frame": 7923.9
   },
-  "source": "C:/Users/vipshao/Documents/MagicLomix/2026-11-19/1/analysis/frames_bgr24.raw",
-  "description": "frame-indexed contour strokes and full-color dynamic brushes; one fixed clean static base at runtime"
+  "source": "offline BGR24 reference frames; 124 frames at 752x352 and 24 fps",
+  "description": "frame-indexed full-color moving silhouette brushes, contours and petal highlights; one fixed clean static base at runtime"
 }

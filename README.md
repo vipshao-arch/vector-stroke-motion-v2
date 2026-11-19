@@ -1,30 +1,30 @@
 # 分层动态笔触重建 v2
 
-这个独立工程从参考视频离线分析出固定画面与逐帧运动笔触，在浏览器里用 Three.js/WebGL 静态图元、一张干净的固定静态基底和 Canvas 2D 前景重建动态画面。网页不播放视频，不加载逐帧原画面，也不把参考视频帧作为纹理或贴片发布；运行时只加载一张固定基底 `assets/base.jpg`，其中运动包络内的冻结轮廓已离线清理。
+这个独立工程从参考视频离线分析出固定画面与逐帧运动笔触，在浏览器里用 Three.js/WebGL 静态图元、一张干净的固定静态基底和 Canvas 2D 前景重建动态画面。网页不播放视频，不加载逐帧原画面，也不把参考视频帧作为纹理或贴片发布；运行时只加载一张固定基底 `assets/base.jpg`，其中运动包络内的冻结轮廓已做局部低频修补。
 
-参考视频为 1504×704、24 fps、124 帧，分析统一缩放到 752×352。播放器用 `Math.round(seconds * 24)` 选择 `VTSK0002` 指令帧组，因此 0、1、2.5、4、5 秒分别对应参考帧 0、24、60、96、120。每条轮廓笔触和每个残差笔刷都来自对应帧与固定基底的局部差异，使头发、胸部、左右翅膀和花瓣的可见状态与该时刻的参考帧同步。
+参考视频为 1504×704、24 fps、124 帧，分析统一缩放到 752×352。播放器用 `Math.round(seconds * 24)` 选择 `VTSK0002` 指令帧组，因此 0、1、2.5、4、5 秒分别对应参考帧 0、24、60、96、120。每条轮廓笔触和每个全彩时序笔刷都取自对应帧，使头发、胸部、左右翅膀和花瓣的可见状态与该时刻的参考帧同步。
 
 ## 分层与运动
 
 - 背景、拱门、左右雕像、座椅和座台固定在统一坐标里；运行时位移、缩放、旋转均为零，31 个相机矩阵全是单位矩阵。
 - `assets/strokes.bin`（VSTK0004）保存 36,300 条静态 WebGL 绘图指令、区域分类、运动模型及单位相机。旧的动态 WebGL 实例被停用，避免冻结的中值轮廓叠在运动画面上。
-- `assets/temporal_runtime.bin`（VTSK0002）保存 124 帧 × 5 区域的短切线笔触和 4 px 全彩时序笔刷。它只有坐标、角度、长度、颜色和不透明度，没有图像块或视频帧。
+- `assets/temporal_runtime.bin`（VTSK0002）保存 124 帧 × 5 区域的短切线笔触和 4 px 全彩时序笔刷。它只有坐标、角度、长度、颜色和不透明度，没有图像块或视频帧；笔刷先在紧凑指令网格上绘制，再由浏览器平滑放大到逻辑分辨率。
 - `DynamicOverlay` 按当前秒数读取对应帧组，在 Canvas 2D 中绘制发丝曲线变化、胸部呼吸高光、左右翅膀各自的浮动轮廓，以及花瓣的下落、横摆与自旋。
-- 固定基底负责静态构图和清晰的主体中心；头发、胸部与左右翼由当前参考帧的近不透明、全彩笔刷逐帧重绘，区域边缘羽化，静态建筑与雕像锚点受保护区约束。花瓣仍使用独立的瞬时亮斑和自旋图元。
+- 固定基底负责静态构图和清晰的主体中心；头发、胸部与左右翼由当前参考帧的实色全彩笔刷逐帧重绘，包络内的冻结轮廓只做最多 12% 的低频局部修补，仅在区域边缘羽化。静态建筑与雕像锚点在没有运动物体经过时保持不动。花瓣仍使用独立的瞬时亮斑和自旋图元。
 
 ## 文件
 
 - `index.html` / `styles.css`：播放器页面
 - `src/player.js`：静态 WebGL 图元、固定基底、时间同步与 Canvas 前景挂载
 - `src/instructions.js`：VSTK0004 解析器、单位相机和静态锁定校验数据
-- `src/dynamicOverlay.js`：VTSK0002 帧索引、短笔触、残差笔刷和花瓣图元绘制
+- `src/dynamicOverlay.js`：VTSK0002 帧索引、短笔触、全彩时序笔刷和花瓣图元绘制
 - `src/main.js`：播放控制、诊断信息与运行时统计
 - `assets/base.jpg`：唯一的固定静态基底，动态物体的旧轮廓已清理
 - `assets/strokes.bin` / `assets/strokes.manifest.json`：静态 WebGL 绘图指令及格式说明
 - `assets/temporal_runtime.bin` / `assets/temporal_runtime.manifest.json`：逐帧动态绘图指令及格式说明
 - `tools/extract_strokes.py`：固定基底、区域分类、静态笔触和 VSTK0004 打包
-- `tools/build_temporal_runtime.py`：逐帧全彩运动笔刷、轮廓采样和 VTSK0002 打包
-- `tools/rebuild_clean_base.py`：从参考帧重建单张固定基底，并同步 VSTK0004 内嵌元数据
+- `tools/build_temporal_runtime.py`：按运动包络生成逐帧全彩运动笔刷、轮廓采样和 VTSK0002 打包
+- `tools/rebuild_clean_base.py`：在清晰固定基底上仅修补运动包络内的冻结轮廓，并同步 VSTK0004 内嵌元数据
 - `tools/check-instructions.mjs`：VSTK0004 格式、静态锁定、单位相机和数值范围检查
 - `tools/check-temporal-runtime.mjs`：VTSK0002 帧表、记录边界和五时刻帧组检查
 - `tools/verify-browser.mjs` / `tools/verify-all.mjs`：本地 HTTP 加载、五时刻合成截图、控制台/WebGL/shader 检查、单一基底与帧序列检查
@@ -59,19 +59,17 @@ x u16 / 16, y u16 / 16, angle u16 / 65535, half_length u8 / 4,
 width u8 / 4, rgb u8[3], alpha u8 / 255, is_petal u8, reserved u8
 ```
 
-残差笔刷记录为 8 字节：`grid_index u32, rgb u8[3], alpha u8 / 255`。这些记录只包含绘图参数，清单见 [temporal_runtime.manifest.json](assets/temporal_runtime.manifest.json)。
+全彩时序笔刷记录为 8 字节：`grid_index u32, rgb u8[3], alpha u8 / 255`。这些记录只包含绘图参数，清单见 [temporal_runtime.manifest.json](assets/temporal_runtime.manifest.json)。
 
 ## 重新生成
 
-准备 Python 环境并安装 `numpy opencv-python-headless pillow`。系统 PATH 中需有 ffmpeg。原始 BGR24 帧缓存可从只读基线目录复用，本工程不修改该缓存或原有 GitHub 仓库/Pages。
+准备 Python 环境并安装 `numpy opencv-python-headless pillow`。系统 PATH 中需有 ffmpeg。原始 BGR24 帧缓存可从只读基线目录复用，本工程不修改该缓存或原有 GitHub 仓库/Pages。`tools/rebuild_clean_base.py` 使用本机分析缓存的绝对路径；迁移机器时先修改脚本顶部的 `FRAMES_PATH` 和 `SOURCE_PATH`。
 
 ```powershell
 powershell -File tools\prepare_frames.ps1 -Video "C:\path\to\reference.mp4" -Work analysis
 python tools\analyze_motion.py --cache analysis\frames_bgr24.raw --output analysis\motion_report.json --region-preview analysis\regions.png
 python tools\extract_strokes.py --video "C:\path\to\reference.mp4" --cache analysis\frames_bgr24.raw --analysis analysis\motion_report.json --analysis-script tools\analyze_motion.py --output assets\strokes.bin
-# verification/webgl_static_center.png 是 WebGL 静态中心构图的一次离线截图，
-# 由 npm test 的截图步骤生成后复制到 verification/。
-python tools\rebuild_clean_base.py --frames "C:\path\to\frames_bgr24.raw" --center-source verification\webgl_static_center.png
+python tools\rebuild_clean_base.py
 python tools\build_temporal_runtime.py --frames "C:\path\to\frames_bgr24.raw" --base assets\base.jpg
 ```
 
@@ -83,7 +81,7 @@ python tools\make_comparison.py
 python tools\verify_roi.py --screenshots verification\screenshots --reference-frames "C:\path\to\frames_bgr24.raw" --output verification\roi_report_browser.json
 ```
 
-`npm test` 覆盖 JS 语法、VSTK0004/VTSK0002 格式、五个时间点的本地浏览器加载、精确帧序列、单一固定基底、动态区域彩色覆盖率、无逐帧图片请求、无 `<video>`、控制台/WebGL/shader 错误与静态相机。`verify_roi.py` 进一步衡量静态 ROI 漂移、五个动态区域变化、逐帧 MAE 相对固定基底的下降、同帧误差是否低于错帧误差，以及运动残差与参考变化的相关性，避免「只在动但没有对齐」。
+`npm test` 覆盖 JS 语法、VSTK0004/VTSK0002 格式、五个时间点的本地浏览器加载、精确帧序列、单一固定基底、动态区域彩色覆盖率、无逐帧图片请求、无 `<video>`、控制台/WebGL/shader 错误与静态相机。`verify_roi.py` 进一步衡量静态 ROI 漂移、五个动态区域变化、逐帧 MAE 相对固定基底的下降、同帧误差是否低于错帧误差，以及动态变化与参考变化的相关性，避免「只在动但没有对齐」。
 
 验收时使用 0、1、2.5、4、5 秒。浏览器合成截图、WebGL 基底截图、前景层截图和报告输出到 `verification/screenshots/`；[comparison.png](verification/comparison.png) 把五个时刻的参考帧与浏览器合成并排展示。
 

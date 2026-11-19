@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""Rebuild the single fixed base and synchronize its metadata.
+"""Clean one fixed base with a local low-frequency patch and sync metadata.
 
-The base is a temporal percentile plate with dark frozen outlines suppressed
-only inside the moving-object envelopes. Static architecture and statues are
-preserved. The runtime still loads exactly one image, assets/base.jpg.
+The sharp reconstruction is kept outside moving envelopes. Only residual
+frozen silhouettes inside those envelopes receive a bounded low-frequency
+plate. The runtime still loads exactly one image, assets/base.jpg.
 """
 
 from __future__ import annotations
 
-import argparse
 import json
 import struct
 from pathlib import Path
@@ -18,7 +17,6 @@ import numpy as np
 
 
 WIDTH, HEIGHT = 752, 352
-FRAME_COUNT = 124
 ENVELOPES = (
     ((20, 352), (22, 235), (60, 175), (195, 145), (310, 165), (310, 232),
      (165, 242), (100, 305), (58, 352), (260, 352), (310, 352)),
@@ -27,43 +25,48 @@ ENVELOPES = (
     ((238, 0), (355, 0), (360, 182), (332, 216), (258, 212), (232, 125)),
     ((305, 70), (437, 70), (437, 190), (305, 190)),
 )
-STATIC_ANCHORS = (
-    (615, 5, 705, 105), (58, 190, 160, 288),
-    (565, 150, 665, 285), (285, 270, 470, 348),
-)
+FRAMES_PATH = Path(r"C:\Users\vipshao\Documents\MagicLomix\2026-11-19\1\analysis\frames_bgr24.raw")
+SOURCE_PATH = Path(r"C:\Users\vipshao\Documents\MagicLomix\2026-11-19\2\inspect_current\base_head.jpg")
+FRAME_COUNT = 124
 
 
-def make_base(frames: np.ndarray, center_source: Path | None = None) -> np.ndarray:
-    percentile = np.percentile(frames, 70, axis=0).astype(np.uint8)
-    plate = cv2.GaussianBlur(percentile, (0, 0), 16).astype(np.float32)
-    gray = cv2.cvtColor(percentile, cv2.COLOR_BGR2GRAY).astype(np.float32)
-    gray_plate = cv2.GaussianBlur(gray, (0, 0), 16)
-    envelope = np.zeros((HEIGHT, WIDTH), np.uint8)
+def envelope_map() -> np.ndarray:
+    mask = np.zeros((HEIGHT, WIDTH), np.uint8)
     for points in ENVELOPES:
-        cv2.fillPoly(envelope, [np.array(points, np.int32)], 255)
-    anchors = np.zeros((HEIGHT, WIDTH), np.uint8)
-    for x0, y0, x1, y1 in STATIC_ANCHORS:
-        anchors[y0:y1, x0:x1] = 255
-    anchors = cv2.GaussianBlur(anchors.astype(np.float32) / 255, (0, 0), 8)
-    soft = cv2.distanceTransform(envelope, cv2.DIST_L2, 5) / 8.0
-    soft = np.clip(cv2.GaussianBlur(soft, (0, 0), 2), 0, 1)
-    dark = np.clip((gray_plate - gray - 2.0) / 24.0, 0, 1)
-    replacement = np.clip(dark * soft * (1 - anchors * 0.98) * 1.15, 0, 1)[:, :, None]
-    result = percentile.astype(np.float32) * (1 - replacement) + plate * replacement
-    result = np.clip(result, 0, 255).astype(np.uint8)
-    if center_source is not None:
-        # The WebGL static reconstruction is sharper for the subject and seat.
-        # It is baked into this one offline JPEG so runtime still loads one image.
-        center = cv2.imread(str(center_source), cv2.IMREAD_COLOR)
-        if center is None:
-            raise SystemExit(f"Cannot read {center_source}")
-        weight = np.zeros((HEIGHT, WIDTH), np.float32)
-        weight[:, 235:455] = 1
-        weight = cv2.GaussianBlur(weight, (0, 0), 9)[:, :, None]
-        result = (result.astype(np.float32) * (1 - weight)
-                  + center.astype(np.float32) * weight)
-        result = np.clip(result, 0, 255).astype(np.uint8)
-    return result
+        cv2.fillPoly(mask, [np.array(points, np.int32)], 255)
+    distance = cv2.distanceTransform(mask, cv2.DIST_L2, 5) / 10.0
+    feather = np.clip(cv2.GaussianBlur(distance, (0, 0), 2), 0, 1)
+    return feather * feather * (3.0 - 2.0 * feather)
+
+
+def background_plate(frames: np.ndarray) -> np.ndarray:
+    gray_stack = np.stack([
+        cv2.GaussianBlur(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (0, 0), 1.2)
+        for frame in frames
+    ])
+    rank = int(round((len(frames) - 1) * 0.88))
+    index = np.argsort(gray_stack, axis=0)[rank][None, :, :, None]
+    bright = np.take_along_axis(frames, np.repeat(index, 3, axis=3), axis=0)[0]
+    plate = cv2.GaussianBlur(cv2.medianBlur(bright, 5), (0, 0), 1.2).astype(np.float32)
+    continuous = cv2.GaussianBlur(plate, (0, 0), 12).astype(np.float32)
+    return np.clip(continuous + (plate - continuous) * 0.28, 0, 255)
+
+
+def make_base(frames: np.ndarray, source: np.ndarray) -> np.ndarray:
+    gray_stack = np.stack([
+        cv2.GaussianBlur(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (0, 0), 1.2)
+        for frame in frames
+    ])
+    activity = cv2.GaussianBlur(np.clip((gray_stack.std(axis=0) - 3.0) / 10.0, 0, 1), (0, 0), 1.2)
+    plate = background_plate(frames)
+    source_gray = cv2.cvtColor(source, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    plate_gray = cv2.cvtColor(np.uint8(np.clip(plate, 0, 255)), cv2.COLOR_BGR2GRAY).astype(np.float32)
+    trace = np.clip((plate_gray - source_gray - 5.0) / 35.0, 0, 1)
+    trace = cv2.GaussianBlur(trace, (0, 0), 1.5) * np.clip((activity + 0.22) / 0.7, 0, 1)
+    # A bounded, low-frequency patch removes frozen traces without replacing
+    # the sharp central subject or turning the whole swept area into white fog.
+    weight = np.clip(envelope_map() * trace, 0, 0.12)[:, :, None]
+    return np.uint8(np.clip(source.astype(np.float32) * (1 - weight) + plate * weight, 0, 255))
 
 
 def replace_embedded_json(binary: Path, base: Path, manifest: Path) -> None:
@@ -73,7 +76,7 @@ def replace_embedded_json(binary: Path, base: Path, manifest: Path) -> None:
     end = start + json_length
     meta = json.loads(bytes(data[start:end]).decode("utf-8"))
     meta["background"]["bytes"] = base.stat().st_size
-    meta["background"]["description"] = "唯一的固定静态底板；动态物体的冻结轮廓已按包络清理"
+    meta["background"]["description"] = "唯一的固定静态底板；运动包络内的冻结轮廓已做局部低频修补"
     encoded = json.dumps(meta, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     if len(encoded) > json_length:
         raise RuntimeError(f"embedded JSON grew from {json_length} to {len(encoded)} bytes")
@@ -88,22 +91,23 @@ def replace_embedded_json(binary: Path, base: Path, manifest: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--frames", type=Path, required=True)
-    parser.add_argument("--center-source", type=Path, default=None)
-    parser.add_argument("--base", type=Path, default=Path("assets/base.jpg"))
-    parser.add_argument("--binary", type=Path, default=Path("assets/strokes.bin"))
-    parser.add_argument("--manifest", type=Path, default=Path("assets/strokes.manifest.json"))
-    args = parser.parse_args()
-    frames = np.fromfile(args.frames, dtype=np.uint8).reshape(FRAME_COUNT, HEIGHT, WIDTH, 3)
-    base = make_base(frames, args.center_source)
-    args.base.parent.mkdir(parents=True, exist_ok=True)
-    cv2.imwrite(str(args.base), base, [cv2.IMWRITE_JPEG_QUALITY, 95])
-    replace_embedded_json(args.binary, args.base, args.manifest)
+    frames = np.fromfile(FRAMES_PATH, dtype=np.uint8).reshape(FRAME_COUNT, HEIGHT, WIDTH, 3)
+    source = cv2.imread(str(SOURCE_PATH), cv2.IMREAD_COLOR)
+    if source is None:
+        raise SystemExit(f"Cannot read {SOURCE_PATH}")
+    base = make_base(frames, source)
+    output = Path("assets/base.jpg")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    cv2.imwrite(str(output), base, [
+        cv2.IMWRITE_JPEG_QUALITY, 95, cv2.IMWRITE_JPEG_OPTIMIZE, 1,
+    ])
+    binary = Path("assets/strokes.bin")
+    manifest = Path("assets/strokes.manifest.json")
+    replace_embedded_json(binary, output, manifest)
     print(json.dumps({
-        "base": args.base.as_posix(),
-        "bytes": args.base.stat().st_size,
-        "description": json.loads(args.manifest.read_text(encoding="utf-8"))["meta"]["background"]["description"],
+        "base": output.as_posix(),
+        "bytes": output.stat().st_size,
+        "description": json.loads(manifest.read_text(encoding="utf-8"))["meta"]["background"]["description"],
     }, ensure_ascii=False, indent=2))
 
 

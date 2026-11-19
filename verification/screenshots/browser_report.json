@@ -27,27 +27,27 @@
       },
       "overlayCoverage": {
         "hair": {
-          "colored": 0.9587267904509283,
-          "opaque": 0.8047214854111406,
-          "mean_saturation": 37.6830488375722
+          "colored": 0.6988859416445623,
+          "opaque": 0.6611140583554377,
+          "mean_saturation": 29.748106724918056
         },
         "chest": {
           "colored": 1,
           "opaque": 1,
-          "mean_saturation": 44.043342231010044
+          "mean_saturation": 43.81831932773109
         },
         "wing_left": {
-          "colored": 0.7091111111111111,
-          "opaque": 0.5180634920634921,
-          "mean_saturation": 26.211616806722652
+          "colored": 0.618031746031746,
+          "opaque": 0.5974603174603175,
+          "mean_saturation": 24.985497416744472
         },
         "wing_right": {
-          "colored": 0.9009230769230769,
-          "opaque": 0.7560854700854701,
-          "mean_saturation": 36.8962993128879
+          "colored": 0.7486666666666667,
+          "opaque": 0.722068376068376,
+          "mean_saturation": 35.82512277526395
         }
       },
-      "pixelChecksum": 1738185634,
+      "pixelChecksum": 1743654935,
       "overlayFrame": 0,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_0s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_0s.png"
@@ -70,27 +70,27 @@
       },
       "overlayCoverage": {
         "hair": {
-          "colored": 0.9718302387267904,
-          "opaque": 0.816923076923077,
-          "mean_saturation": 38.3962914651272
+          "colored": 0.6944297082228117,
+          "opaque": 0.6611140583554377,
+          "mean_saturation": 29.745653300046822
         },
         "chest": {
           "colored": 1,
           "opaque": 1,
-          "mean_saturation": 44.40701202834075
+          "mean_saturation": 43.93159663865546
         },
         "wing_left": {
-          "colored": 0.701015873015873,
-          "opaque": 0.5009523809523809,
-          "mean_saturation": 25.07136644880181
+          "colored": 0.6166031746031746,
+          "opaque": 0.5973968253968254,
+          "mean_saturation": 23.91610644257696
         },
         "wing_right": {
-          "colored": 0.9077948717948718,
-          "opaque": 0.7558974358974359,
-          "mean_saturation": 36.42012073068606
+          "colored": 0.7500854700854701,
+          "opaque": 0.7218803418803419,
+          "mean_saturation": 35.336740874811504
         }
       },
-      "pixelChecksum": 1739577071,
+      "pixelChecksum": 1744782284,
       "overlayFrame": 24,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_1s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_1s.png"
@@ -113,27 +113,27 @@
       },
       "overlayCoverage": {
         "hair": {
-          "colored": 0.9683819628647214,
-          "opaque": 0.823395225464191,
-          "mean_saturation": 37.15759754511892
+          "colored": 0.6972944297082229,
+          "opaque": 0.6610610079575597,
+          "mean_saturation": 28.652113174182166
         },
         "chest": {
           "colored": 1,
           "opaque": 1,
-          "mean_saturation": 43.52661525786785
+          "mean_saturation": 43.19579831932773
         },
         "wing_left": {
-          "colored": 0.6995555555555556,
-          "opaque": 0.46336507936507937,
-          "mean_saturation": 22.67223629007158
+          "colored": 0.6175555555555555,
+          "opaque": 0.5975555555555555,
+          "mean_saturation": 21.74423168378461
         },
         "wing_right": {
-          "colored": 0.9342051282051282,
-          "opaque": 0.784923076923077,
-          "mean_saturation": 37.87969545835447
+          "colored": 0.7485982905982906,
+          "opaque": 0.722,
+          "mean_saturation": 34.742628054298685
         }
       },
-      "pixelChecksum": 1739737673,
+      "pixelChecksum": 1749387906,
       "overlayFrame": 60,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_2_5s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_2_5s.png"
@@ -156,27 +156,27 @@
       },
       "overlayCoverage": {
         "hair": {
-          "colored": 0.9573474801061008,
-          "opaque": 0.8123607427055702,
-          "mean_saturation": 36.85883205908353
+          "colored": 0.6969761273209549,
+          "opaque": 0.6613793103448276,
+          "mean_saturation": 28.844516357206043
         },
         "chest": {
           "colored": 1,
           "opaque": 1,
-          "mean_saturation": 43.45927104959631
+          "mean_saturation": 43.10218487394958
         },
         "wing_left": {
-          "colored": 0.7096190476190476,
-          "opaque": 0.5147936507936508,
-          "mean_saturation": 24.86882539682533
+          "colored": 0.6172380952380953,
+          "opaque": 0.5976190476190476,
+          "mean_saturation": 23.377443386243353
         },
         "wing_right": {
-          "colored": 0.9037606837606837,
-          "opaque": 0.7485299145299146,
-          "mean_saturation": 36.387218166583324
+          "colored": 0.7487521367521367,
+          "opaque": 0.7222051282051282,
+          "mean_saturation": 35.37287018602317
         }
       },
-      "pixelChecksum": 1738407936,
+      "pixelChecksum": 1745209569,
       "overlayFrame": 96,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_4s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_4s.png"
@@ -199,27 +199,27 @@
       },
       "overlayCoverage": {
         "hair": {
-          "colored": 0.9588328912466844,
-          "opaque": 0.8058885941644562,
-          "mean_saturation": 37.85116783689613
+          "colored": 0.6987267904509283,
+          "opaque": 0.6609549071618037,
+          "mean_saturation": 29.69606553284444
         },
         "chest": {
           "colored": 1,
           "opaque": 1,
-          "mean_saturation": 44.318619871478
+          "mean_saturation": 43.89042016806723
         },
         "wing_left": {
-          "colored": 0.7137777777777777,
-          "opaque": 0.5229206349206349,
-          "mean_saturation": 26.524549393090513
+          "colored": 0.6172698412698413,
+          "opaque": 0.5975873015873016,
+          "mean_saturation": 25.06325963274197
         },
         "wing_right": {
-          "colored": 0.9096752136752136,
-          "opaque": 0.7614358974358975,
-          "mean_saturation": 37.42883841126211
+          "colored": 0.7486324786324786,
+          "opaque": 0.7222222222222222,
+          "mean_saturation": 35.91234509803916
         }
       },
-      "pixelChecksum": 1736736972,
+      "pixelChecksum": 1742431668,
       "overlayFrame": 120,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_5s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_5s.png"
@@ -309,8 +309,8 @@
       "background": {
         "path": "assets/base.jpg",
         "mime": "image/jpeg",
-        "bytes": 72447,
-        "description": "唯一的固定静态底板；动态物体的冻结轮廓已按包络清理"
+        "bytes": 70581,
+        "description": "唯一的固定静态底板；运动包络内的冻结轮廓已做局部低频修补"
       },
       "runtime_camera": "identity; static layers are locked in unified coordinates",
       "analysis": {

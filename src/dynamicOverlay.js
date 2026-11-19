@@ -65,6 +65,10 @@ export class DynamicOverlay {
     this.regions = manifest.regions.map((region, index) => ({ ...region, index }));
     this.view = view;
     this.lastFrame = -1;
+    this.washCanvas = document.createElement('canvas');
+    this.washCanvas.width = this.gridWidth;
+    this.washCanvas.height = this.gridHeight;
+    this.washContext = this.washCanvas.getContext('2d', { alpha: true });
   }
 
   bind(canvas) {
@@ -107,10 +111,23 @@ export class DynamicOverlay {
     ctx.globalCompositeOperation = 'source-over';
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
+    this.washContext.clearRect(0, 0, this.gridWidth, this.gridHeight);
+    this.washContext.globalCompositeOperation = 'source-over';
+    const frameTables = [];
     for (const region of this.regions) {
       const strokes = this.table(this.strokeTableOffset, frame, region.index);
       const washes = this.table(this.washTableOffset, frame, region.index);
-      this.drawWashes(ctx, washes.offset, washes.count);
+      this.drawWashes(this.washContext, washes.offset, washes.count);
+      frameTables.push(strokes);
+    }
+    // Brush records are assembled on a compact instruction canvas and scaled
+    // with bilinear filtering. The published data is still only the records,
+    // while the visible foreground no longer has 4 px rectangular seams.
+    ctx.globalAlpha = 1;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(this.washCanvas, 0, 0, this.width, this.height);
+    for (const strokes of frameTables) {
       this.drawStrokes(ctx, strokes.offset, strokes.count, frame);
     }
     ctx.globalAlpha = 1;
@@ -119,8 +136,6 @@ export class DynamicOverlay {
 
   drawWashes(ctx, offset, count) {
     const view = this.view;
-    let previousColor = '';
-    const feather = Math.max(1, Math.round(this.cell * 0.25));
     for (let item = 0; item < count; item += 1) {
       const r = offset + item * WASH_BYTES;
       const index = view.getUint32(r, true);
@@ -128,19 +143,10 @@ export class DynamicOverlay {
       const green = view.getUint8(r + 5);
       const blue = view.getUint8(r + 6);
       const alpha = view.getUint8(r + 7) / 255;
-      const color = `${red},${green},${blue}`;
-      if (color !== previousColor) {
-        ctx.fillStyle = `rgb(${color})`;
-        previousColor = color;
-      }
       const gx = index % this.gridWidth;
       const gy = Math.floor(index / this.gridWidth);
-      const x = gx * this.cell;
-      const y = gy * this.cell;
-      ctx.globalAlpha = alpha;
-      ctx.fillRect(x - feather, y - feather, this.cell + feather * 2, this.cell + feather * 2);
-      ctx.globalAlpha = alpha;
-      ctx.fillRect(x, y, this.cell, this.cell);
+      ctx.fillStyle = `rgba(${red},${green},${blue},${alpha})`;
+      ctx.fillRect(gx, gy, 1, 1);
     }
   }
 

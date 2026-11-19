@@ -1,5 +1,5 @@
-import { StrokePlayer } from './player.js?v=9';
-import { REGIONS, MOTION_MODELS } from './instructions.js?v=9';
+import { StrokePlayer } from './player.js?v=12';
+import { REGIONS, MOTION_MODELS } from './instructions.js?v=12';
 
 const canvas = document.getElementById('canvas');
 const status = document.getElementById('status');
@@ -33,7 +33,7 @@ function setStats(info) {
     ['固定 WebGL 静态笔触', info.stroke_count.toLocaleString('zh-CN')],
     ['时序帧组', `${info.temporal.frame_count} 帧 / ${info.temporal.fps} fps`],
     ['逐帧轮廓笔触', info.temporal.strokes.total.toLocaleString('zh-CN')],
-    ['逐帧残差笔刷', info.temporal.wash_patches.total.toLocaleString('zh-CN')],
+    ['逐帧全彩时序笔刷', info.temporal.wash_patches.total.toLocaleString('zh-CN')],
     ['动态区域', info.temporal.regions.map((region) => region.name).join(' / ')],
     ['逻辑画布', `${info.width} × ${info.height}`],
     ['时长 / 帧率', `${info.duration.toFixed(3)} s / ${info.fps} fps`],
@@ -90,7 +90,7 @@ function syncTime() {
 }
 requestAnimationFrame(syncTime);
 
-player.load('assets/strokes.bin?v=9').then(() => {
+player.load('assets/strokes.bin?v=12').then(() => {
   loading.classList.add('hidden');
   playButton.disabled = false;
   playButton.textContent = '暂停';

@@ -1,8 +1,8 @@
-import * as THREE from './three.module.js?v=8';
+import * as THREE from './three.module.js?v=12';
 import {
   KEYFRAMES, KEYFRAME_FIELDS, parseInstructions,
-} from './instructions.js?v=8';
-import { DynamicOverlay } from './dynamicOverlay.js?v=9';
+} from './instructions.js?v=12';
+import { DynamicOverlay } from './dynamicOverlay.js?v=12';
 
 const VERTEX_SHADER = /* glsl */ `
   precision highp float;
@@ -366,8 +366,8 @@ export class StrokePlayer {
     const meta = this.parse(buffer);
     if (meta.background?.path) await this.loadBackground(meta.background.path);
     this.overlay = await DynamicOverlay.load(
-      'assets/temporal_runtime.bin?v=9',
-      'assets/temporal_runtime.manifest.json?v=9',
+      'assets/temporal_runtime.bin?v=12',
+      'assets/temporal_runtime.manifest.json?v=12',
     );
     this.overlay.bind(this.overlayCanvas);
     this.overlay.draw(0);

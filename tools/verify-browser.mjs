@@ -164,9 +164,17 @@ for (const seconds of times) {
 
 const expectedFrames = times.map((seconds) => Math.round(seconds * 24));
 const frameSequenceMatches = overlayFrames.every((frame, index) => frame === expectedFrames[index]);
+const minimumOpaqueCoverage = {
+  hair: 0.55,
+  chest: 0.95,
+  wing_left: 0.55,
+  wing_right: 0.65,
+};
 const coloredDynamicRegions = screenshots.every(({ overlayCoverage }) => (
-  overlayCoverage && Object.values(overlayCoverage).every(({ colored, opaque }) => (
-    colored > 0.25 && opaque > 0.18
+  overlayCoverage && Object.entries(minimumOpaqueCoverage).every(([name, minimum]) => (
+    overlayCoverage[name]?.opaque >= minimum
+    && overlayCoverage[name]?.colored >= minimum + 0.03
+    && overlayCoverage[name]?.mean_saturation > 8
   ))
 ));
 const imageRequests = await page.evaluate(() => performance.getEntriesByType('resource')
