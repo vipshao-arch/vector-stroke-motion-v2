@@ -26,6 +26,12 @@ STATIC = ("background_arch", "statue_left", "statue_right", "seat")
 DYNAMIC = ("petals", "hair", "chest", "wing_left", "wing_right")
 TIME_LABELS = ("0s", "1s", "2_5s", "4s", "5s")
 REFERENCE_FRAMES = (0, 24, 60, 96, 120)
+ALIGNED_ROI = {
+    "hair": (292, 12, 452, 168),
+    "chest": (324, 86, 422, 178),
+    "wing_left": (30, 154, 292, 348),
+    "wing_right": (462, 64, 750, 344),
+}
 
 
 def load_images(folder: Path, prefix: str) -> list[np.ndarray]:
@@ -102,11 +108,29 @@ def measure(images: list[np.ndarray]) -> dict[str, object]:
     return result
 
 
+def temporal_alignment(images: list[np.ndarray], reference: list[np.ndarray]) -> dict[str, object]:
+    """Mean per-frame pixel error to the reference, before and after motion."""
+    result = {}
+    for name, (x0, y0, x1, y1) in ALIGNED_ROI.items():
+        result[name] = {
+            "reference_mae": [
+                round(float(np.abs(image[y0:y1, x0:x1].astype(np.float32) - frame[y0:y1, x0:x1]).mean()), 4)
+                for image, frame in zip(images, reference)
+            ],
+            "reference_mae_mean": round(float(np.mean([
+                np.abs(image[y0:y1, x0:x1].astype(np.float32) - frame[y0:y1, x0:x1]).mean()
+                for image, frame in zip(images, reference)
+            ])), 4),
+        }
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--screenshots", type=Path, required=True)
     parser.add_argument("--reference-frames", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--base", type=Path, default=Path("assets/base.jpg"))
     args = parser.parse_args()
 
     rendered = load_images(args.screenshots, "logical")
@@ -119,7 +143,66 @@ def main() -> None:
     if any(image is None for image in rendered):
         raise SystemExit("Missing browser screenshot")
     rendered_metrics = measure(rendered)
+    aligned = temporal_alignment(rendered, reference)
     reference_metrics = measure(reference)
+    fixed_base = cv2.imread(str(args.base))
+    if fixed_base is None:
+        raise SystemExit(f"Missing fixed base: {args.base}")
+    same_frame_alignment = {}
+    for name, (x0, y0, x1, y1) in ALIGNED_ROI.items():
+        errors = []
+        baseline_errors = []
+        for image, frame in zip(rendered, reference):
+            crop = image[y0:y1, x0:x1].astype(np.float32)
+            target = frame[y0:y1, x0:x1].astype(np.float32)
+            fixed = fixed_base[y0:y1, x0:x1].astype(np.float32)
+            errors.append(float(np.abs(crop - target).mean()))
+            baseline_errors.append(float(np.abs(fixed - target).mean()))
+        # Absolute pixel MAE is dominated by the shared fixed base, so the
+        # temporal-order check compares each frame's change from its own t0.
+        # A correctly aligned reconstruction is closest to the matching
+        # reference change even when the underlying painting is stylized.
+        rendered_change = [image.astype(np.float32) - rendered[0].astype(np.float32) for image in rendered]
+        reference_change = [frame.astype(np.float32) - reference[0].astype(np.float32) for frame in reference]
+        change_pairs = [
+            [
+                round(float(np.abs(render[y0:y1, x0:x1] - target[y0:y1, x0:x1]).mean()), 4)
+                for target in reference_change
+            ]
+            for render in rendered_change
+        ]
+        correlation = float(np.mean([
+            np.corrcoef(
+                (image.astype(np.float32) - rendered[0].astype(np.float32))[y0:y1, x0:x1].ravel(),
+                (frame.astype(np.float32) - reference[0].astype(np.float32))[y0:y1, x0:x1].ravel(),
+            )[0, 1]
+            for image, frame in zip(rendered[1:], reference[1:])
+        ]))
+        same_frame_alignment[name] = {
+            "rendered_mae": [round(value, 4) for value in errors],
+            "fixed_base_mae": [round(value, 4) for value in baseline_errors],
+            "rendered_mae_mean": round(float(np.mean(errors)), 4),
+            "fixed_base_mae_mean": round(float(np.mean(baseline_errors)), 4),
+            "improvement": round(float(np.mean(baseline_errors) - np.mean(errors)), 4),
+            "every_frame_improves": all(a < b for a, b in zip(errors, baseline_errors)),
+            "same_frame_mae_mean": round(float(np.mean(errors)), 4),
+            "mismatched_frame_mae_mean": round(float(np.mean([
+                np.abs(image[y0:y1, x0:x1].astype(np.float32) - frame[y0:y1, x0:x1]).mean()
+                for image_index, image in enumerate(rendered)
+                for frame_index, frame in enumerate(reference)
+                if image_index != frame_index
+            ])), 4),
+            "change_from_t0_mae": change_pairs,
+            "change_from_t0_correlation_mean": round(correlation, 4),
+            "best_matching_reference_frame_absolute_mae": [
+                int(np.argmin([
+                    float(np.abs(image[y0:y1, x0:x1].astype(np.float32) - candidate[y0:y1, x0:x1]).mean())
+                    for candidate in reference
+                ]))
+                for image in rendered
+            ],
+            "best_matching_motion_change": [int(np.argmin(row)) for row in change_pairs],
+        }
     static_max = max(rendered_metrics[name]["max_drift_px"] for name in STATIC)
     dynamic_min = min(rendered_metrics[name]["temporal_std_mean"] for name in DYNAMIC)
     checks = {
@@ -132,6 +215,18 @@ def main() -> None:
             rendered_metrics["wing_left"]["max_mean_abs_vs_t0"],
             rendered_metrics["wing_right"]["max_mean_abs_vs_t0"],
         ) > 0.15,
+        "same_frame_mae_improves": all(
+            same_frame_alignment[name]["improvement"] > 0.8
+            for name in ALIGNED_ROI
+        ),
+        "same_frame_better_than_mismatched": all(
+            metrics["same_frame_mae_mean"] < metrics["mismatched_frame_mae_mean"]
+            for metrics in same_frame_alignment.values()
+        ),
+        "motion_change_correlation": all(
+            metrics["change_from_t0_correlation_mean"] > 0.35
+            for metrics in same_frame_alignment.values()
+        ),
     }
     report = {
         "times_seconds": [0, 1, 2.5, 4, 5],
@@ -141,10 +236,15 @@ def main() -> None:
         "dynamic_rois": list(DYNAMIC),
         "rendered": rendered_metrics,
         "reference": reference_metrics,
+        "temporal_alignment": aligned,
+        "same_frame_alignment": same_frame_alignment,
         "summary": {
             "rendered_static_max_drift_px": static_max,
             "rendered_dynamic_min_temporal_std": dynamic_min,
             "reference_static_max_drift_px": max(reference_metrics[name]["max_drift_px"] for name in STATIC),
+            "aligned_region_reference_mae_mean": {
+                name: aligned[name]["reference_mae_mean"] for name in ALIGNED_ROI
+            },
         },
         "checks": checks,
     }

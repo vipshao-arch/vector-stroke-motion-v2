@@ -1,5 +1,5 @@
-import { StrokePlayer } from './player.js?v=6';
-import { REGIONS, MOTION_MODELS } from './instructions.js?v=6';
+import { StrokePlayer } from './player.js?v=8';
+import { REGIONS, MOTION_MODELS } from './instructions.js?v=8';
 
 const canvas = document.getElementById('canvas');
 const status = document.getElementById('status');
@@ -27,20 +27,17 @@ function setStatus(text) {
 }
 
 function setStats(info) {
+  if (!info.temporal) return;
   const rows = [
-    ['总笔触数', info.stroke_count.toLocaleString('zh-CN')],
-    ['图元类型', Object.values(info.counts).map((n) => n.toLocaleString('zh-CN')).join(' / ')],
-    ['时间关键帧', `${info.keyframe_count} 组 / 笔触`],
-    ['静态锁定笔触', info.motion_model_counts.static_lock.toLocaleString('zh-CN')],
-    ['呼吸 / 头发 / 双翼', [
-      info.motion_model_counts.breathing,
-      info.motion_model_counts.hair_wave,
-      info.motion_model_counts.wing_float_left + info.motion_model_counts.wing_float_right,
-    ].map((n) => n.toLocaleString('zh-CN')).join(' / ')],
-    ['花瓣 / 闪动', `${info.motion_model_counts.petal_fall.toLocaleString('zh-CN')} / ${info.motion_model_counts.shimmer.toLocaleString('zh-CN')}`],
+    ['固定基底', `${info.background.path}（1 张）`],
+    ['固定 WebGL 静态笔触', info.stroke_count.toLocaleString('zh-CN')],
+    ['时序帧组', `${info.temporal.frame_count} 帧 / ${info.temporal.fps} fps`],
+    ['逐帧轮廓笔触', info.temporal.strokes.total.toLocaleString('zh-CN')],
+    ['逐帧残差笔刷', info.temporal.wash_patches.total.toLocaleString('zh-CN')],
+    ['动态区域', info.temporal.regions.map((region) => region.name).join(' / ')],
     ['逻辑画布', `${info.width} × ${info.height}`],
     ['时长 / 帧率', `${info.duration.toFixed(3)} s / ${info.fps} fps`],
-    ['指令体积', `${(info.bytes / 1048576).toFixed(2)} MiB`],
+    ['指令体积', `${((info.bytes + info.temporal.bytes) / 1048576).toFixed(2)} MiB`],
     ['静态相机', '固定（位移 / 缩放 / 旋转 = 0）'],
   ];
   stats.replaceChildren(...rows.flatMap(([key, value]) => {
@@ -93,7 +90,7 @@ function syncTime() {
 }
 requestAnimationFrame(syncTime);
 
-player.load('assets/strokes.bin?v=6').then(() => {
+player.load('assets/strokes.bin?v=8').then(() => {
   loading.classList.add('hidden');
   playButton.disabled = false;
   playButton.textContent = '暂停';

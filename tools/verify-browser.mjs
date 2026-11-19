@@ -54,6 +54,7 @@ await page.waitForFunction(() => document.body.dataset.ready === 'true', { timeo
 }));
 
 const screenshots = [];
+const overlayFrames = [];
 for (const seconds of times) {
   const name = `render_${String(seconds).replace('.', '_')}s.png`;
   const path = resolve(outputDir, name);
@@ -99,6 +100,8 @@ for (const seconds of times) {
     const overlay = document.querySelector('canvas.dynamic-overlay');
     return overlay ? overlay.toDataURL('image/png').split(',')[1] : null;
   });
+  const overlayFrame = await page.evaluate(() => window.player.overlay?.lastFrame);
+  overlayFrames.push(overlayFrame);
   const overlayPath = outputDir === resolve('verification/screenshots')
     ? resolve(outputDir, `overlay_${String(seconds).replace('.', '_')}s.png`)
     : null;
@@ -114,10 +117,18 @@ for (const seconds of times) {
     glErrorAfterDraw,
     frameUniforms,
     pixelChecksum: pixels.checksum,
+    overlayFrame,
     webglPath,
     overlayPath,
   });
 }
+
+const expectedFrames = times.map((seconds) => Math.round(seconds * 24));
+const frameSequenceMatches = overlayFrames.every((frame, index) => frame === expectedFrames[index]);
+const imageRequests = await page.evaluate(() => performance.getEntriesByType('resource')
+  .filter((entry) => /\.(?:jpe?g|png|webp)(?:\?|$)/i.test(entry.name))
+  .map((entry) => entry.name));
+const baseImageRequests = imageRequests.filter((name) => /\/base\.jpg(?:\?|$)/.test(name));
 
 const diagnostics = await page.evaluate(() => ({
   errors: window.errors,
@@ -135,6 +146,9 @@ const report = {
   chromePath,
   times,
   screenshots,
+  expectedFrames,
+  overlayFrames,
+  imageRequests,
   runtime,
   consoleErrors,
   shaderErrors,
@@ -149,6 +163,9 @@ const report = {
     noShaderLinkFailures: !diagnostics.diagnosticText.includes('shader 编译失败'),
     noWebGLError: diagnostics.glError === 0,
     fiveScreenshots: screenshots.length === 5,
+    frameSequenceMatches,
+    oneFixedBaseImage: baseImageRequests.length === 1,
+    noPerFrameImages: !imageRequests.some((name) => /frame_\d+\.(?:jpe?g|png|webp)/i.test(name)),
   },
 };
 await writeFile(resolve(outputDir, 'browser_report.json'), JSON.stringify(report, null, 2), 'utf8');

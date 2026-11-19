@@ -11,7 +11,7 @@
   <main class="app">
     <header>
       <div>
-        <p class="eyebrow">VIDEO → REGION-AWARE DRAWING INSTRUCTIONS → THREE.JS</p>
+        <p class="eyebrow">VIDEO → FRAME-INDEXED VECTOR INSTRUCTIONS → THREE.JS + CANVAS</p>
         <h1>分层动态笔触重建</h1>
       </div>
       <div class="status" id="status" role="status">等待绘图指令</div>
@@ -37,7 +37,7 @@
     <section class="info">
       <article>
         <h2>分层运动</h2>
-        <p>背景、拱门、雕像和座椅固定在统一坐标里；头发按发丝相位传播弯曲，胸部与躯干独立呼吸，左右翅膀围绕各自锚点浮动，花瓣有生成、下落、横摆、自旋和淡入淡出。页面加载 <code>strokes.bin</code> 与固定低频基底；Three.js 在 WebGL 中重建完整画面，同一份笔触记录再驱动 Canvas 2D 前景层绘制可见动态细节。</p>
+        <p>背景、拱门、雕像和座椅固定在统一坐标里。页面只加载一张固定低频基底；静态 WebGL 图元保持不动，Canvas 2D 按 24 fps 选择对应帧的短轮廓笔触与残差笔刷，重建头发沿曲线的相位飘动、胸部呼吸、左右翅膀独立浮动，以及花瓣下落与自旋。页面不播放视频，也不使用逐帧原画面。</p>
       </article>
       <article>
         <h2>指令统计</h2>
@@ -45,6 +45,6 @@
       </article>
     </section>
   </main>
-  <script type="module" src="src/main.js?v=6"></script>
+  <script type="module" src="src/main.js?v=8"></script>
 </body>
 </html>

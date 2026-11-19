@@ -4,5 +4,8 @@ analysis/frames_bgr24.raw
 verification/screenshots_edge/
 verification/screenshots_edge2/
 verification/screenshots_playwright/
+verification/probe_*.png
+verification/final_probe/
+assets/temporal/
 *.pyc
 __pycache__/

@@ -25,7 +25,8 @@
         "time": 0,
         "frame": 0
       },
-      "pixelChecksum": 1707605701,
+      "pixelChecksum": 1738733729,
+      "overlayFrame": 0,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_0s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_0s.png"
     },
@@ -45,7 +46,8 @@
         "time": 0.19354837460978228,
         "frame": 23.80645007700322
       },
-      "pixelChecksum": 1707748765,
+      "pixelChecksum": 1737910484,
+      "overlayFrame": 24,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_1s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_1s.png"
     },
@@ -65,7 +67,8 @@
         "time": 0.4838709365244557,
         "frame": 59.51612519250805
       },
-      "pixelChecksum": 1707378560,
+      "pixelChecksum": 1739989946,
+      "overlayFrame": 60,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_2_5s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_2_5s.png"
     },
@@ -85,7 +88,8 @@
         "time": 0.7741934984391291,
         "frame": 95.22580030801288
       },
-      "pixelChecksum": 1707348870,
+      "pixelChecksum": 1735916392,
+      "overlayFrame": 96,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_4s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_4s.png"
     },
@@ -105,10 +109,28 @@
         "time": 0.9677418730489113,
         "frame": 119.0322503850161
       },
-      "pixelChecksum": 1707262875,
+      "pixelChecksum": 1738702545,
+      "overlayFrame": 120,
       "webglPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\webgl_5s.png",
       "overlayPath": "C:\\Users\\vipshao\\Documents\\MagicLomix\\2026-11-19\\vector-stroke-motion-v2\\verification\\screenshots\\overlay_5s.png"
     }
+  ],
+  "expectedFrames": [
+    0,
+    24,
+    60,
+    96,
+    120
+  ],
+  "overlayFrames": [
+    0,
+    24,
+    60,
+    96,
+    120
+  ],
+  "imageRequests": [
+    "http://127.0.0.1:8791/assets/base.jpg"
   ],
   "runtime": {
     "meta": {
@@ -177,8 +199,8 @@
       "background": {
         "path": "assets/base.jpg",
         "mime": "image/jpeg",
-        "bytes": 60597,
-        "description": "固定坐标的时域中值低频基底；运行时不位移、不缩放、不旋转"
+        "bytes": 80568,
+        "description": "唯一的固定时域中值低频基底；运行时不位移、不缩放、不旋转"
       },
       "runtime_camera": "identity; static layers are locked in unified coordinates",
       "analysis": {
@@ -230,6 +252,9 @@
     "noShaderErrors": true,
     "noShaderLinkFailures": true,
     "noWebGLError": true,
-    "fiveScreenshots": true
+    "fiveScreenshots": true,
+    "frameSequenceMatches": true,
+    "oneFixedBaseImage": true,
+    "noPerFrameImages": true
   }
 }

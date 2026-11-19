@@ -1,0 +1,86 @@
+{
+  "magic": "VTSK0002",
+  "version": 2,
+  "width": 752,
+  "height": 352,
+  "frame_count": 124,
+  "fps": 24,
+  "regions": [
+    {
+      "name": "hair",
+      "box": [
+        255,
+        8,
+        345,
+        205
+      ],
+      "limit": 1100
+    },
+    {
+      "name": "chest",
+      "box": [
+        322,
+        84,
+        424,
+        180
+      ],
+      "limit": 380
+    },
+    {
+      "name": "wing_left",
+      "box": [
+        28,
+        154,
+        295,
+        352
+      ],
+      "limit": 1500
+    },
+    {
+      "name": "wing_right",
+      "box": [
+        458,
+        60,
+        752,
+        352
+      ],
+      "limit": 2100
+    },
+    {
+      "name": "petals",
+      "box": [
+        0,
+        0,
+        752,
+        352
+      ],
+      "limit": 900
+    }
+  ],
+  "file": "assets/temporal_runtime.bin",
+  "base": "assets/base.jpg",
+  "bytes": 11691498,
+  "header_bytes": 42,
+  "stroke_record_bytes": 14,
+  "wash_record_bytes": 8,
+  "stroke_table_offset": 42,
+  "wash_table_offset": 6242,
+  "data_offset": 12442,
+  "grid": {
+    "width": 188,
+    "height": 88,
+    "cell_px": 4
+  },
+  "strokes": {
+    "total": 741520,
+    "mean_per_frame": 5980.0,
+    "min_per_frame": 5980,
+    "max_per_frame": 5980
+  },
+  "wash_patches": {
+    "total": 162222,
+    "mean_per_frame": 1308.2
+  },
+  "source": "C:/Users/vipshao/Documents/MagicLomix/2026-11-19/1/analysis/frames_bgr24.raw",
+  "description": "frame-indexed short contour strokes and signed residual brushes; one fixed low-frequency base at runtime"
+}

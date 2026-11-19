@@ -1,8 +1,8 @@
-import * as THREE from './three.module.js?v=6';
+import * as THREE from './three.module.js?v=8';
 import {
   KEYFRAMES, KEYFRAME_FIELDS, parseInstructions,
-} from './instructions.js?v=6';
-import { DynamicOverlay } from './dynamicOverlay.js?v=6';
+} from './instructions.js?v=8';
+import { DynamicOverlay } from './dynamicOverlay.js?v=8';
 
 const VERTEX_SHADER = /* glsl */ `
   precision highp float;
@@ -289,8 +289,9 @@ const BACKGROUND_FRAGMENT_SHADER = /* glsl */ `
   uniform sampler2D uBase;
   varying vec2 vScreen;
   void main() {
-    // The low-frequency base is locked to fixed screen coordinates.
-    gl_FragColor = texture2D(uBase, vec2(vScreen.x, 1.0 - vScreen.y));
+    // The only fixed image used by the player. It never moves or changes.
+    vec2 uv = vec2(vScreen.x, 1.0 - vScreen.y);
+    gl_FragColor = vec4(texture2D(uBase, uv).rgb, 1.0);
   }
 `;
 
@@ -364,6 +365,20 @@ export class StrokePlayer {
     };
     const meta = this.parse(buffer);
     if (meta.background?.path) await this.loadBackground(meta.background.path);
+    this.overlay = await DynamicOverlay.load(
+      'assets/temporal_runtime.bin?v=8',
+      'assets/temporal_runtime.manifest.json?v=8',
+    );
+    this.overlay.bind(this.overlayCanvas);
+    this.overlay.draw(0);
+    this.onStats({
+      ...this.meta,
+      layers: this.layerCounts,
+      regionCounts: this.regionCounts,
+      modelCounts: this.modelCounts,
+      bytes: this.lastBufferInfo.bytes,
+      temporal: this.overlay.manifest,
+    });
     this.loaded = true;
     this.onStatus('运行时程序化绘制中');
   }
@@ -389,6 +404,7 @@ export class StrokePlayer {
       uniforms: { uBase: { value: texture } },
       depthTest: false,
       depthWrite: false,
+      transparent: false,
     });
     const background = new THREE.Mesh(geometry, material);
     background.frustumCulled = false;
@@ -401,7 +417,7 @@ export class StrokePlayer {
     const {
       meta, params, colors, motion, keys, layerCounts,
       regionCounts, modelCounts, strokeCount, bytes,
-      staticCount, dynamicCount, dynamicStart, sourceRecords,
+      staticCount, dynamicCount, dynamicStart,
     } = result;
     this.meta = meta;
     const maxTextureSize = this.renderer.capabilities.maxTextureSize || 2048;
@@ -449,13 +465,14 @@ export class StrokePlayer {
     });
     const dynamicGeometry = geometry.clone();
     dynamicGeometry.setAttribute('aIndex', new THREE.InstancedBufferAttribute(dynamicIndices, 1));
-    dynamicGeometry.instanceCount = dynamicCount;
+    // Static WebGL primitives stay fixed in unified coordinates. Frozen
+    // dynamic instances are disabled; their current-frame detail comes from
+    // the VTSK0002 Canvas foreground instead.
+    dynamicGeometry.instanceCount = 0;
     dynamicGeometry.boundingSphere = geometry.boundingSphere;
 
-    // One material and one shared uniform object keeps both batches in sync.
-    // Static strokes are drawn first; dynamic strokes follow in a second
-    // instance batch. The Canvas 2D foreground adds visible detail motion on
-    // GPU drivers that do not refresh large float-texture vertex draws.
+    // One material and shared uniforms keep the fixed WebGL reconstruction and
+    // the frame-indexed Canvas foreground on the same timeline.
     this.staticMaterial = material;
     this.dynamicMaterial = material;
     this.mesh = new THREE.Mesh(geometry, material);
@@ -463,6 +480,7 @@ export class StrokePlayer {
     this.mesh.renderOrder = 1;
     this.dynamicMesh = new THREE.Mesh(dynamicGeometry, material);
     this.dynamicMesh.frustumCulled = false;
+    this.dynamicMesh.visible = false;
     this.dynamicMesh.renderOrder = 2;
     const strokeLayer = new THREE.Group();
     strokeLayer.add(this.mesh);
@@ -473,7 +491,7 @@ export class StrokePlayer {
     overlayCanvas.className = 'dynamic-overlay';
     overlayCanvas.setAttribute('aria-hidden', 'true');
     (this.canvas.parentElement || document.body).appendChild(overlayCanvas);
-    this.overlay = new DynamicOverlay(overlayCanvas, sourceRecords, this.meta);
+    this.overlayCanvas = overlayCanvas;
     this.strokeCount = strokeCount;
     this.staticCount = staticCount;
     this.dynamicCount = dynamicCount;

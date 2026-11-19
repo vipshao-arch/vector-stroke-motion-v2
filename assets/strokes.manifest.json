@@ -65,8 +65,8 @@
     "background": {
       "path": "assets/base.jpg",
       "mime": "image/jpeg",
-      "bytes": 60597,
-      "description": "固定坐标的时域中值低频基底；运行时不位移、不缩放、不旋转"
+      "bytes": 80568,
+      "description": "唯一的固定时域中值低频基底；运行时不位移、不缩放、不旋转"
     },
     "runtime_camera": "identity; static layers are locked in unified coordinates",
     "analysis": {
