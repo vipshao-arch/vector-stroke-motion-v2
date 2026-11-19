@@ -10,28 +10,28 @@
       "name": "hair",
       "box": [
         255,
-        8,
-        345,
-        205
+        0,
+        445,
+        215
       ],
       "limit": 1100
     },
     {
       "name": "chest",
       "box": [
-        322,
-        84,
-        424,
-        180
+        305,
+        80,
+        435,
+        190
       ],
       "limit": 380
     },
     {
       "name": "wing_left",
       "box": [
-        28,
-        154,
-        295,
+        20,
+        140,
+        315,
         352
       ],
       "limit": 1500
@@ -39,8 +39,8 @@
     {
       "name": "wing_right",
       "box": [
-        458,
-        60,
+        440,
+        70,
         752,
         352
       ],
@@ -59,7 +59,7 @@
   ],
   "file": "assets/temporal_runtime.bin",
   "base": "assets/base.jpg",
-  "bytes": 11691498,
+  "bytes": 20895674,
   "header_bytes": 42,
   "stroke_record_bytes": 14,
   "wash_record_bytes": 8,
@@ -78,9 +78,9 @@
     "max_per_frame": 5980
   },
   "wash_patches": {
-    "total": 162222,
-    "mean_per_frame": 1308.2
+    "total": 1312744,
+    "mean_per_frame": 10586.6
   },
   "source": "C:/Users/vipshao/Documents/MagicLomix/2026-11-19/1/analysis/frames_bgr24.raw",
-  "description": "frame-indexed short contour strokes and signed residual brushes; one fixed low-frequency base at runtime"
+  "description": "frame-indexed contour strokes and full-color dynamic brushes; one fixed clean static base at runtime"
 }

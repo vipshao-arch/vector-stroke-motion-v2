@@ -2,9 +2,9 @@
 """Build frame-indexed vector strokes and residual brushes (VTSK0002).
 
 Reference frames are consumed only by this offline generator. The runtime
-loads one fixed low-frequency median base plus these compact instructions.
-Every instruction describes a short stroke or a small colored brush sampled
-from a single frame's residual against that base; no frame bitmap is stored.
+loads one fixed clean static base plus these compact instructions. Every
+instruction describes a short stroke or a small colored brush sampled from a
+single frame; no frame bitmap or coverage image is stored.
 """
 
 from __future__ import annotations
@@ -24,23 +24,27 @@ FPS = 24
 MAGIC = b"VTSK0002"
 REGION_NAMES = ("hair", "chest", "wing_left", "wing_right", "petals")
 REGIONS = {
-    "hair": (255, 8, 345, 205),
-    "chest": (322, 84, 424, 180),
-    "wing_left": (28, 154, 295, 352),
-    "wing_right": (458, 60, 752, 352),
+    "hair": (255, 0, 445, 215),
+    "chest": (305, 80, 435, 190),
+    "wing_left": (20, 140, 315, 352),
+    "wing_right": (440, 70, 752, 352),
     "petals": (0, 0, WIDTH, HEIGHT),
 }
 MASK_POLYGONS = {
-    "hair": [(267, 8), (334, 8), (344, 172), (324, 205), (275, 197), (251, 142)],
-    "chest": [(327, 91), (417, 91), (417, 170), (327, 170)],
+    "hair": [
+        (332, 5), (382, 5), (410, 32), (438, 52), (432, 70),
+        (408, 82), (398, 112), (382, 207), (340, 207),
+        (272, 175), (282, 132), (315, 92), (315, 40),
+    ],
+    "chest": [(318, 88), (428, 88), (430, 180), (312, 180)],
     "wing_left": [
-        (34, 348), (36, 260), (78, 205), (196, 169), (295, 186),
-        (295, 214), (161, 223), (109, 281), (78, 352),
-        (242, 352), (292, 341),
+        (24, 352), (26, 238), (65, 178), (195, 148), (307, 168),
+        (307, 230), (165, 240), (103, 302), (62, 352),
+        (255, 352), (307, 352),
     ],
     "wing_right": [
-        (462, 101), (752, 160), (752, 315), (684, 352),
-        (545, 352), (518, 295), (561, 244), (620, 169), (465, 139),
+        (446, 82), (752, 142), (752, 332), (698, 352),
+        (528, 352), (498, 288), (546, 222), (632, 148), (450, 118),
     ],
 }
 LIMITS = {
@@ -77,8 +81,8 @@ def region_mask(name: str, box: tuple[int, int, int, int]) -> np.ndarray:
     else:
         local[:] = 255
     distance = cv2.distanceTransform(local, cv2.DIST_L2, 5)
-    interior = np.clip((distance - 4.0) / 9.0, 0, 1)
-    return cv2.GaussianBlur(interior.astype(np.float32), (0, 0), 1.2)
+    interior = np.clip((distance - 2.0) / 4.0, 0, 1)
+    return cv2.GaussianBlur(interior.astype(np.float32), (0, 0), 1.0)
 
 
 def static_guard() -> np.ndarray:
@@ -88,8 +92,16 @@ def static_guard() -> np.ndarray:
         (615, 5, 705, 105), (58, 190, 160, 288),
         (565, 150, 665, 285), (285, 270, 470, 348),
     ):
-        guard[y0:y1, x0:x1] = 0.12
+        guard[y0:y1, x0:x1] = 0.08
     return cv2.GaussianBlur(guard, (0, 0), 12)
+
+
+def face_guard() -> np.ndarray:
+    """Keep the face sharp while the surrounding hair and chest repaint."""
+    face = np.zeros((HEIGHT, WIDTH), np.uint8)
+    cv2.ellipse(face, (374, 57), (28, 33), 0, 0, 360, 255, -1)
+    face = cv2.GaussianBlur(face.astype(np.float32) / 255, (0, 0), 5)
+    return np.clip(1.0 - face * 0.90, 0, 1)
 
 
 def petal_exclusion() -> np.ndarray:
@@ -243,30 +255,29 @@ def wash_instructions(
     box: tuple[int, int, int, int],
     claimed: np.ndarray,
     base_cells: np.ndarray,
+    frame_cells: np.ndarray,
+    face_guard_grid: np.ndarray,
 ) -> tuple[list[bytes], np.ndarray]:
     x0, y0, x1, y1 = box
-    cell_residual = cv2.resize(residual, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)[:, :, ::-1]
-    cell_confidence = cv2.resize(confidence, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)
-    # Overlap is drawn once per frame. Petals use their own full-frame mask.
-    global_mask = np.zeros((HEIGHT, WIDTH), np.float32)
-    global_mask[y0:y1, x0:x1] = confidence
-    global_mask = cv2.GaussianBlur(global_mask, (0, 0), 1.0) * np.maximum(1.0 - claimed, 0)
-    cell_mask = cv2.resize(global_mask, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)
-    unique = np.minimum(cell_confidence, cell_mask)
-    strength = np.clip((np.abs(cell_residual).mean(axis=2) - 2.5) / 26.0, 0, 1) * np.maximum(unique, cell_mask * 0.42)
-    indices = np.argwhere(strength > 0.06)
+    gx0, gy0 = x0 // CELL, y0 // CELL
+    gx1, gy1 = min(GRID_W, (x1 + CELL - 1) // CELL), min(GRID_H, (y1 + CELL - 1) // CELL)
+    membership = cv2.resize(confidence, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)
+    available = cv2.resize(claimed, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)
+    strength = np.clip(membership * (1.0 - np.clip(available, 0, 1)), 0, 1) * face_guard_grid
+    strength = np.where(strength > 0.16, 0.995, np.clip(strength * 5.8, 0, 1))
+    indices = np.argwhere(strength[gy0:gy1, gx0:gx1] > 0.02)
     output = []
-    for gy, gx in indices:
-        delta = cell_residual[gy, gx]
-        # The fixed base is visible beneath the brush. A signed residual is
-        # converted to the target color, so dark wings and bright highlights
-        # both move the composite in the correct direction at this frame.
-        target = np.clip(base_cells[gy, gx] + delta * 1.08, 0, 255)
-        alpha = float(np.clip(strength[gy, gx] * 0.88, 0, 0.72))
-        output.append(quantize_wash(int(gy * GRID_W + gx), target, alpha))
-    new_claim = np.zeros((HEIGHT, WIDTH), np.float32)
-    new_claim[y0:y1, x0:x1] = confidence
-    return output, np.maximum(claimed, new_claim)
+    for local_y, local_x in indices:
+        gy, gx = gy0 + int(local_y), gx0 + int(local_x)
+        alpha = float(strength[gy, gx])
+        if alpha <= 0:
+            continue
+        # Full current-frame color makes moving wings and hair opaque. The
+        # record is still only a position, three color bytes and an alpha.
+        output.append(quantize_wash(int(gy * GRID_W + gx), frame_cells[gy, gx], alpha))
+    claim = np.zeros((HEIGHT, WIDTH), np.float32)
+    claim[y0:y1, x0:x1] = confidence
+    return output, np.maximum(claimed, claim)
 
 
 def main() -> None:
@@ -283,10 +294,14 @@ def main() -> None:
     blurred_base = cv2.GaussianBlur(base, (0, 0), 3.0)
     base_cells = cv2.resize(blurred_base, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)[:, :, ::-1].astype(np.float32)
     guard = static_guard()
+    face_guard_grid = cv2.resize(face_guard(), (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)
     memberships = {}
     for name in REGION_NAMES:
         x0, y0, x1, y1 = REGIONS[name]
-        memberships[name] = region_mask(name, REGIONS[name]) * guard[y0:y1, x0:x1]
+        membership = region_mask(name, REGIONS[name]) * guard[y0:y1, x0:x1]
+        if name in ("hair", "chest"):
+            membership *= face_guard()[y0:y1, x0:x1]
+        memberships[name] = membership
 
     rng = np.random.default_rng(240518)
     total_entries = FRAME_COUNT * len(REGION_NAMES)
@@ -299,6 +314,7 @@ def main() -> None:
     for frame_index, frame in enumerate(frames):
         frame_payload = bytearray()
         petal_score, petal_wash = petal_transients(frame, median_gray)
+        frame_cells = cv2.resize(frame, (GRID_W, GRID_H), interpolation=cv2.INTER_AREA)[:, :, ::-1].astype(np.float32)
         claimed = np.zeros((HEIGHT, WIDTH), np.float32)
         for region_index, name in enumerate(REGION_NAMES):
             entry_index = frame_index * len(REGION_NAMES) + region_index
@@ -318,7 +334,10 @@ def main() -> None:
                     frame, blurred_base, box, memberships[name], global_activity,
                 )
                 records = sample_strokes(frame, delta, confidence, box, LIMITS[name], rng)
-                washes, claimed = wash_instructions(delta, confidence, box, claimed, base_cells)
+                washes, claimed = wash_instructions(
+                    delta, confidence, box, claimed, base_cells,
+                    frame_cells, face_guard_grid,
+                )
             stroke_counts[entry_index] = len(records)
             stroke_offsets[entry_index] = DATA_OFFSET + sum(len(payload) for payload in frame_payloads) + len(frame_payload)
             for record in records:
@@ -371,7 +390,7 @@ def main() -> None:
             "mean_per_frame": round(sum(wash_counts) / FRAME_COUNT, 1),
         },
         "source": args.frames.as_posix(),
-        "description": "frame-indexed short contour strokes and signed residual brushes; one fixed low-frequency base at runtime",
+        "description": "frame-indexed contour strokes and full-color dynamic brushes; one fixed clean static base at runtime",
     }
     args.manifest.write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=False, indent=2))

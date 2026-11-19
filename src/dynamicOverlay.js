@@ -11,7 +11,7 @@ const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
  *
  * The WebGL scene draws exactly one fixed low-frequency base. Each time step
  * selects its reference-frame instruction group: short contour strokes and
- * feathered residual brushes describe only the moving details. No video,
+ * nearly opaque full-color brushes repaint the moving details. No video,
  * per-frame reference bitmap, coverage mask, or second base image is loaded.
  */
 export class DynamicOverlay {
@@ -120,7 +120,7 @@ export class DynamicOverlay {
   drawWashes(ctx, offset, count) {
     const view = this.view;
     let previousColor = '';
-    const feather = Math.max(1, Math.round(this.cell * 0.26));
+    const feather = Math.max(1, Math.round(this.cell * 0.25));
     for (let item = 0; item < count; item += 1) {
       const r = offset + item * WASH_BYTES;
       const index = view.getUint32(r, true);
@@ -137,9 +137,9 @@ export class DynamicOverlay {
       const gy = Math.floor(index / this.gridWidth);
       const x = gx * this.cell;
       const y = gy * this.cell;
-      ctx.globalAlpha = alpha * 0.55;
+      ctx.globalAlpha = alpha;
       ctx.fillRect(x - feather, y - feather, this.cell + feather * 2, this.cell + feather * 2);
-      ctx.globalAlpha = alpha * 0.7;
+      ctx.globalAlpha = alpha;
       ctx.fillRect(x, y, this.cell, this.cell);
     }
   }

@@ -1,5 +1,5 @@
-import { StrokePlayer } from './player.js?v=8';
-import { REGIONS, MOTION_MODELS } from './instructions.js?v=8';
+import { StrokePlayer } from './player.js?v=9';
+import { REGIONS, MOTION_MODELS } from './instructions.js?v=9';
 
 const canvas = document.getElementById('canvas');
 const status = document.getElementById('status');
@@ -90,7 +90,7 @@ function syncTime() {
 }
 requestAnimationFrame(syncTime);
 
-player.load('assets/strokes.bin?v=8').then(() => {
+player.load('assets/strokes.bin?v=9').then(() => {
   loading.classList.add('hidden');
   playButton.disabled = false;
   playButton.textContent = '暂停';

@@ -96,6 +96,44 @@ for (const seconds of times) {
     time: window.player.mesh.material.uniforms.uTime.value,
     frame: window.player.mesh.material.uniforms.uFrame.value,
   }));
+  const overlayCoverage = await page.evaluate(() => {
+    const overlay = document.querySelector('canvas.dynamic-overlay');
+    if (!overlay) return null;
+    const probe = document.createElement('canvas');
+    probe.width = 752;
+    probe.height = 352;
+    const context = probe.getContext('2d', { willReadFrequently: true });
+    context.drawImage(overlay, 0, 0, 752, 352);
+    const pixels = context.getImageData(0, 0, 752, 352).data;
+    const boxes = {
+      hair: [300, 15, 445, 145], chest: [330, 95, 415, 165],
+      wing_left: [55, 180, 265, 330], wing_right: [485, 95, 745, 320],
+    };
+    const coverage = {};
+    for (const [name, [x0, y0, x1, y1]] of Object.entries(boxes)) {
+      let colored = 0;
+      let opaque = 0;
+      let saturation = 0;
+      for (let y = y0; y < y1; y += 1) {
+        for (let x = x0; x < x1; x += 1) {
+          const r = pixels[(y * 752 + x) * 4];
+          const g = pixels[(y * 752 + x) * 4 + 1];
+          const b = pixels[(y * 752 + x) * 4 + 2];
+          const alpha = pixels[(y * 752 + x) * 4 + 3] / 255;
+          if (alpha > 0.15) colored += 1;
+          if (alpha > 0.75) opaque += 1;
+          saturation += (Math.max(r, g, b) - Math.min(r, g, b)) * alpha;
+        }
+      }
+      const total = (x1 - x0) * (y1 - y0);
+      coverage[name] = {
+        colored: colored / total,
+        opaque: opaque / total,
+        mean_saturation: saturation / total,
+      };
+    }
+    return coverage;
+  });
   const overlayPng = await page.evaluate(() => {
     const overlay = document.querySelector('canvas.dynamic-overlay');
     return overlay ? overlay.toDataURL('image/png').split(',')[1] : null;
@@ -116,6 +154,7 @@ for (const seconds of times) {
     logicalSize: [canvasWidth, canvasHeight],
     glErrorAfterDraw,
     frameUniforms,
+    overlayCoverage,
     pixelChecksum: pixels.checksum,
     overlayFrame,
     webglPath,
@@ -125,6 +164,11 @@ for (const seconds of times) {
 
 const expectedFrames = times.map((seconds) => Math.round(seconds * 24));
 const frameSequenceMatches = overlayFrames.every((frame, index) => frame === expectedFrames[index]);
+const coloredDynamicRegions = screenshots.every(({ overlayCoverage }) => (
+  overlayCoverage && Object.values(overlayCoverage).every(({ colored, opaque }) => (
+    colored > 0.25 && opaque > 0.18
+  ))
+));
 const imageRequests = await page.evaluate(() => performance.getEntriesByType('resource')
   .filter((entry) => /\.(?:jpe?g|png|webp)(?:\?|$)/i.test(entry.name))
   .map((entry) => entry.name));
@@ -164,6 +208,7 @@ const report = {
     noWebGLError: diagnostics.glError === 0,
     fiveScreenshots: screenshots.length === 5,
     frameSequenceMatches,
+    coloredDynamicRegions,
     oneFixedBaseImage: baseImageRequests.length === 1,
     noPerFrameImages: !imageRequests.some((name) => /frame_\d+\.(?:jpe?g|png|webp)/i.test(name)),
   },
